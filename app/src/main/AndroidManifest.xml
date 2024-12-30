@@ -13,6 +13,9 @@
         android:theme="@style/Theme.Hostel"
         tools:targetApi="31">
         <activity
+            android:name=".otppage"
+            android:exported="false" />
+        <activity
             android:name=".forogotpassword"
             android:exported="false" />
         <activity

@@ -27,7 +27,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Registration extends AppCompatActivity {
+public class registrationpage extends AppCompatActivity {
 
     EditText username, email, phone, password, conformpassword;
     Button register;
@@ -121,7 +121,7 @@ public class Registration extends AppCompatActivity {
                         @Override
                         public void onCancelled(@NonNull DatabaseError error) {
                             progrssbarsubmit.setVisibility(View.GONE);
-                            Toast.makeText(Registration.this, "Error checking details. Try again.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(registrationpage.this, "Error checking details. Try again.", Toast.LENGTH_SHORT).show();
                         }
                     });
                 }
@@ -137,7 +137,7 @@ public class Registration extends AppCompatActivity {
                 "+91" + Phone_no,
                 60,
                 TimeUnit.SECONDS,
-                Registration.this,
+                registrationpage.this,
                 new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
                     @Override
                     public void onVerificationCompleted(@NonNull PhoneAuthCredential phoneAuthCredential) {
@@ -149,7 +149,7 @@ public class Registration extends AppCompatActivity {
                     public void onVerificationFailed(@NonNull FirebaseException e) {
                         progrssbarsubmit.setVisibility(View.GONE);
                         register.setVisibility(View.VISIBLE);
-                        Toast.makeText(Registration.this, "Please check your Internet Connection", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(registrationpage.this, "Please check your Internet Connection", Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
@@ -157,10 +157,10 @@ public class Registration extends AppCompatActivity {
                         super.onCodeSent(backendotp, forceResendingToken);
                         progrssbarsubmit.setVisibility(View.GONE);
                         register.setVisibility(View.VISIBLE);
-                        Toast.makeText(Registration.this, "Otp Sent Successfully", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(registrationpage.this, "Otp Sent Successfully", Toast.LENGTH_SHORT).show();
 
                         // Navigate to the verification activity
-                        Intent intent = new Intent(Registration.this, verifyaccount.class);
+                        Intent intent = new Intent(registrationpage.this, otppage.class);
                         intent.putExtra("otp", backendotp); // Pass the OTP ID to the next activity
                         intent.putExtra("mobile", Phone_no);
                         intent.putExtra("username", User_name);
