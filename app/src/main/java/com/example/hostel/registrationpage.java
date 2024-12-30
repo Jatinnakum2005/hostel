@@ -10,7 +10,6 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -21,6 +20,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Logger;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.concurrent.TimeUnit;
@@ -37,7 +37,8 @@ public class registrationpage extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        EdgeToEdge.enable(this);
+        FirebaseDatabase.getInstance().setLogLevel(Logger.Level.DEBUG); // Enable Firebase debugging
+
         setContentView(R.layout.activity_registrationpage);
 
         // Initialize views
@@ -49,61 +50,66 @@ public class registrationpage extends AppCompatActivity {
         register = findViewById(R.id.submitButton);
         progrssbarsubmit = findViewById(R.id.progrssbarsubmit);
 
-        register.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String User_name = username.getText().toString().trim();
-                String E_mail = email.getText().toString().trim();
-                String Phone_no = phone.getText().toString().trim();
-                String Pass = password.getText().toString().trim();
-                String Confirm_pass = conformpassword.getText().toString().trim();
+        // Set a global exception handler
+        Thread.setDefaultUncaughtExceptionHandler((thread, throwable) -> {
+            throwable.printStackTrace();
+            Toast.makeText(this, "An unexpected error occurred.", Toast.LENGTH_LONG).show();
+        });
 
-                // Validate inputs
-                String mobileRegex = "[6-9][0-9]{9}";
-                Pattern mobilePattern = Pattern.compile(mobileRegex);
-                Matcher mobileMatcher = mobilePattern.matcher(Phone_no);
+        register.setOnClickListener(v -> {
+            String User_name = username.getText().toString().trim();
+            String E_mail = email.getText().toString().trim();
+            String Phone_no = phone.getText().toString().trim();
+            String Pass = password.getText().toString().trim();
+            String Confirm_pass = conformpassword.getText().toString().trim();
 
-                if (TextUtils.isEmpty(User_name)) {
-                    username.setError("Username is required");
-                    username.requestFocus();
-                } else if (User_name.contains(" ")) {
-                    username.setError("Username cannot contain spaces");
-                    username.requestFocus();
-                } else if (TextUtils.isEmpty(E_mail) || !Patterns.EMAIL_ADDRESS.matcher(E_mail).matches()) {
-                    email.setError("Valid Email is required");
-                    email.requestFocus();
-                } else if (Phone_no.length() != 10 || !mobileMatcher.find()) {
-                    phone.setError("Valid Mobile number is required");
-                    phone.requestFocus();
-                } else if (TextUtils.isEmpty(Pass) || Pass.length() < 8) {
-                    password.setError("Password must be at least 8 characters");
-                    password.requestFocus();
-                } else if (TextUtils.isEmpty(Confirm_pass) || !Pass.equals(Confirm_pass)) {
-                    conformpassword.setError("Password does not match");
-                    conformpassword.requestFocus();
-                } else {
-                    // Check if username and phone number exist in Firebase Realtime Database
-                    DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Users");
-                    progrssbarsubmit.setVisibility(View.VISIBLE);
-                    register.setVisibility(View.INVISIBLE);
+            // Input validation
+            String mobileRegex = "[6-9][0-9]{9}";
+            Pattern mobilePattern = Pattern.compile(mobileRegex);
+            Matcher mobileMatcher = mobilePattern.matcher(Phone_no);
 
-                    databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+            if (TextUtils.isEmpty(User_name)) {
+                username.setError("Username is required");
+                username.requestFocus();
+            } else if (User_name.contains(" ")) {
+                username.setError("Username cannot contain spaces");
+                username.requestFocus();
+            } else if (TextUtils.isEmpty(E_mail) || !Patterns.EMAIL_ADDRESS.matcher(E_mail).matches()) {
+                email.setError("Valid Email is required");
+                email.requestFocus();
+            } else if (Phone_no.length() != 10 || !mobileMatcher.find()) {
+                phone.setError("Valid Mobile number is required");
+                phone.requestFocus();
+            } else if (TextUtils.isEmpty(Pass) || Pass.length() < 8) {
+                password.setError("Password must be at least 8 characters");
+                password.requestFocus();
+            } else if (TextUtils.isEmpty(Confirm_pass) || !Pass.equals(Confirm_pass)) {
+                conformpassword.setError("Passwords do not match");
+                conformpassword.requestFocus();
+            } else {
+                // Check if username and phone exist in Firebase
+                DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Users");
+                progrssbarsubmit.setVisibility(View.VISIBLE);
+                register.setVisibility(View.INVISIBLE);
+
+                databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        try {
                             progrssbarsubmit.setVisibility(View.GONE);
                             boolean usernameExists = snapshot.child(User_name).exists();
                             boolean phoneExists = false;
 
                             for (DataSnapshot userSnapshot : snapshot.getChildren()) {
                                 String existingPhone = userSnapshot.child("phone").getValue(String.class);
-                                if (Phone_no.equals(existingPhone)) {
+                                if (existingPhone != null && Phone_no.equals(existingPhone)) {
                                     phoneExists = true;
                                     break;
                                 }
                             }
 
                             if (usernameExists) {
-                                username.setError("User Name Already Exist");
+                                username.setError("User Name Already Exists");
                                 username.requestFocus();
                                 progrssbarsubmit.setVisibility(View.INVISIBLE);
                                 register.setVisibility(View.VISIBLE);
@@ -113,25 +119,31 @@ public class registrationpage extends AppCompatActivity {
                                 progrssbarsubmit.setVisibility(View.INVISIBLE);
                                 register.setVisibility(View.VISIBLE);
                             } else {
-                                // Proceed with OTP verification
-                                sendOtp(User_name, E_mail, Phone_no, Pass);
+                                sendOtpWithRetry(User_name, E_mail, Phone_no, Pass, 3); // Retry OTP sending up to 3 times
                             }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            Toast.makeText(registrationpage.this, "An error occurred: " + e.getMessage(), Toast.LENGTH_LONG).show();
                         }
+                    }
 
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
-                            progrssbarsubmit.setVisibility(View.GONE);
-                            Toast.makeText(registrationpage.this, "Error checking details. Try again.", Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                }
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        progrssbarsubmit.setVisibility(View.GONE);
+                        Toast.makeText(registrationpage.this, "Database error: " + error.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                });
             }
         });
     }
 
-    private void sendOtp(String User_name, String E_mail, String Phone_no, String Confirm_pass) {
-        progrssbarsubmit.setVisibility(View.VISIBLE);
-        register.setVisibility(View.INVISIBLE);
+    private void sendOtpWithRetry(String User_name, String E_mail, String Phone_no, String Confirm_pass, int retries) {
+        if (retries <= 0) {
+            Toast.makeText(this, "Failed to send OTP after multiple attempts.", Toast.LENGTH_LONG).show();
+            progrssbarsubmit.setVisibility(View.GONE);
+            register.setVisibility(View.VISIBLE);
+            return;
+        }
 
         PhoneAuthProvider.getInstance().verifyPhoneNumber(
                 "+91" + Phone_no,
@@ -147,21 +159,19 @@ public class registrationpage extends AppCompatActivity {
 
                     @Override
                     public void onVerificationFailed(@NonNull FirebaseException e) {
-                        progrssbarsubmit.setVisibility(View.GONE);
-                        register.setVisibility(View.VISIBLE);
-                        Toast.makeText(registrationpage.this, "Please check your Internet Connection", Toast.LENGTH_SHORT).show();
+                        e.printStackTrace();
+                        sendOtpWithRetry(User_name, E_mail, Phone_no, Confirm_pass, retries - 1); // Retry
                     }
 
                     @Override
-                    public void onCodeSent(@NonNull String backendotp, @NonNull PhoneAuthProvider.ForceResendingToken forceResendingToken) {
-                        super.onCodeSent(backendotp, forceResendingToken);
+                    public void onCodeSent(@NonNull String backendotp, @NonNull PhoneAuthProvider.ForceResendingToken token) {
                         progrssbarsubmit.setVisibility(View.GONE);
                         register.setVisibility(View.VISIBLE);
-                        Toast.makeText(registrationpage.this, "Otp Sent Successfully", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(registrationpage.this, "OTP Sent Successfully", Toast.LENGTH_SHORT).show();
 
-                        // Navigate to the verification activity
+                        // Navigate to OTP verification page
                         Intent intent = new Intent(registrationpage.this, otppage.class);
-                        intent.putExtra("otp", backendotp); // Pass the OTP ID to the next activity
+                        intent.putExtra("otp", backendotp);
                         intent.putExtra("mobile", Phone_no);
                         intent.putExtra("username", User_name);
                         intent.putExtra("email", E_mail);

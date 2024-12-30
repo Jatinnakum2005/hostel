@@ -10,7 +10,7 @@
     android:overScrollMode="never"
     android:paddingTop="50dp"
     android:scrollbars="none"
-    tools:context=".Registration">
+    tools:context=".MainActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
