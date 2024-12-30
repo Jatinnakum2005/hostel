@@ -1,0 +1,68 @@
+{
+  "project_info": {
+    "project_number": "1040839035388",
+    "firebase_url": "https://management-b40fc-default-rtdb.firebaseio.com",
+    "project_id": "management-b40fc",
+    "storage_bucket": "management-b40fc.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1040839035388:android:4d6e7f165db28a6dab8a79",
+        "android_client_info": {
+          "package_name": "com.example.hostel"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA54StPkxRrm6bEzHjddR0z2I8E7r78TnA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1040839035388:android:2a63e2f2f6de64c0ab8a79",
+        "android_client_info": {
+          "package_name": "com.example.management"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA54StPkxRrm6bEzHjddR0z2I8E7r78TnA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1040839035388:android:c284a234ed2b4983ab8a79",
+        "android_client_info": {
+          "package_name": "com.example.myapplication"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA54StPkxRrm6bEzHjddR0z2I8E7r78TnA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
