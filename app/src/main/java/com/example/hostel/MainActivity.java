@@ -23,7 +23,7 @@ import com.google.firebase.database.ValueEventListener;
 
 public class MainActivity extends AppCompatActivity {
 
-    public TextView registerBtn, forgotPassword;
+    public TextView registerBtn;
     public EditText loginUsername, loginPassword;
     public Button loginBtn;
     public ProgressBar progressBarLogin;
@@ -37,25 +37,19 @@ public class MainActivity extends AppCompatActivity {
 
         // Initialize UI elements
         registerBtn = findViewById(R.id.registerbtn);
-        forgotPassword = findViewById(R.id.forpass);
         loginUsername = findViewById(R.id.loginusername);
         loginPassword = findViewById(R.id.loginpass);
         loginBtn = findViewById(R.id.loginbtn);
         progressBarLogin = findViewById(R.id.progrssbarlogin);
 
-        // Check if the views are found
-        if (registerBtn == null || forgotPassword == null) {
+        // Check if the views are initialized
+        if (registerBtn == null || loginUsername == null || loginPassword == null) {
             throw new IllegalStateException("One or more views not found in the layout");
         }
 
         // Set click listeners
         registerBtn.setOnClickListener(view -> {
             Intent intent = new Intent(MainActivity.this, registrationpage.class);
-            startActivity(intent);
-        });
-
-        forgotPassword.setOnClickListener(view -> {
-            Intent intent = new Intent(MainActivity.this, forogotpassword.class);
             startActivity(intent);
         });
 
@@ -68,7 +62,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-
 
     // Validate inputs
     private boolean validateInputs(String username, String password) {
@@ -92,11 +85,14 @@ public class MainActivity extends AppCompatActivity {
         loginBtn.setVisibility(View.INVISIBLE);
 
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users");
-        Query checkUserDatabase = reference.orderByChild("userName").equalTo(username);
+        Query checkUserDatabase = reference.orderByChild("username").equalTo(username); // Ensure field matches Firebase key
 
         checkUserDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                progressBarLogin.setVisibility(View.GONE);
+                loginBtn.setVisibility(View.VISIBLE);
+
                 if (snapshot.exists()) {
                     DataSnapshot userSnapshot = snapshot.getChildren().iterator().next();
                     String passwordFromDB = userSnapshot.child("password").getValue(String.class);
@@ -114,19 +110,18 @@ public class MainActivity extends AppCompatActivity {
                         startActivity(intent);
                         finish();
                     } else {
-                        Toast.makeText(MainActivity.this, "Invalid Credentials", Toast.LENGTH_SHORT).show();
+                        loginPassword.setError("Invalid Credentials");
+                        loginPassword.requestFocus();
                     }
                 } else {
-                    Toast.makeText(MainActivity.this, "User Does Not Exist", Toast.LENGTH_SHORT).show();
+                    loginUsername.setError("User Does Not Exist");
+                    loginUsername.requestFocus();
                 }
-
-                progressBarLogin.setVisibility(View.INVISIBLE);
-                loginBtn.setVisibility(View.VISIBLE);
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                progressBarLogin.setVisibility(View.INVISIBLE);
+                progressBarLogin.setVisibility(View.GONE);
                 loginBtn.setVisibility(View.VISIBLE);
                 Toast.makeText(MainActivity.this, "Database error: " + error.getMessage(), Toast.LENGTH_SHORT).show();
             }

@@ -86,7 +86,7 @@
                 android:layout_marginTop="24px"
                 android:backgroundTint="@color/white"
                 android:text="LOGIN"
-                android:textColor="@color/white"
+                android:textColor="@color/black"
                 android:textSize="18dp"
                 android:textStyle="bold" />
 
@@ -98,16 +98,6 @@
                 android:visibility="gone"/>
         </FrameLayout>
 
-        <!--forgot password-->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="50px"
-            android:gravity="center"
-            android:text="I forgot my password!"
-            android:id="@+id/forpass"
-            android:textColor="@color/black"
-            android:textSize="50px" />
 
         <LinearLayout
             android:layout_width="match_parent"
