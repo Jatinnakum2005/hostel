@@ -47,6 +47,16 @@ public class MainActivity extends AppCompatActivity {
             throw new IllegalStateException("One or more views not found in the layout");
         }
 
+        // Check if the user is already logged in
+        SharedPreferences sharedPreferences = getSharedPreferences("LoginPrefs", MODE_PRIVATE);
+        boolean isLoggedIn = sharedPreferences.getBoolean("isLoggedIn", false);
+        if (isLoggedIn) {
+            // Skip login screen and go directly to the main page
+            Intent intent = new Intent(MainActivity.this, mainpage.class);
+            startActivity(intent);
+            finish();
+        }
+
         // Set click listeners
         registerBtn.setOnClickListener(view -> {
             Intent intent = new Intent(MainActivity.this, registrationpage.class);

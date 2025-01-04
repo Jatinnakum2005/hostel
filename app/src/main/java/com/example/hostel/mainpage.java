@@ -1,24 +1,44 @@
 package com.example.hostel;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.LinearLayout;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 public class mainpage extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_mainpage);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
+
+        // Create a LinearLayout to hold the buttons
+        LinearLayout layout = new LinearLayout(this);
+        layout.setOrientation(LinearLayout.VERTICAL);
+
+        // Add buttons for each activity
+        addButton(layout, "Manage Room", ManageRoom.class);
+
+        // Set the layout as the content view
+        setContentView(layout);
+    }
+
+    // Helper method to create and add buttons
+    private void addButton(LinearLayout layout, String text, final Class<?> activityToOpen) {
+        Button button = new Button(this);
+        button.setText(text);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Correct the Intent creation
+                Intent intent = new Intent(mainpage.this, activityToOpen);
+                startActivity(intent);
+            }
         });
+
+        // Add the button to the layout
+        layout.addView(button);
     }
 }

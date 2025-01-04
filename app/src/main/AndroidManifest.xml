@@ -5,7 +5,6 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
-
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -17,9 +16,17 @@
         android:theme="@style/Theme.Hostel"
         tools:targetApi="31">
         <activity
+            android:name=".viewroom"
+            android:exported="false" />
+        <activity
+            android:name=".ManageRoom"
+            android:exported="false" />
+        <activity
+            android:name=".manageroom"
+            android:exported="false" />
+        <activity
             android:name=".otppage"
             android:exported="false" />
-
         <activity
             android:name=".registrationpage"
             android:exported="false" />
