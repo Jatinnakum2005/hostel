@@ -16,6 +16,21 @@
         android:theme="@style/Theme.Hostel"
         tools:targetApi="31">
         <activity
+            android:name=".leavedstudent"
+            android:exported="false" />
+        <activity
+            android:name=".allstudentliving"
+            android:exported="false" />
+        <activity
+            android:name=".studentfees"
+            android:exported="false" />
+        <activity
+            android:name=".updateanddelete"
+            android:exported="false" />
+        <activity
+            android:name=".newstudent"
+            android:exported="false" />
+        <activity
             android:name=".viewroom"
             android:exported="false" />
         <activity
