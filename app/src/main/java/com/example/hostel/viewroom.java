@@ -1,5 +1,6 @@
 package com.example.hostel;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -16,7 +17,7 @@ public class viewroom extends AppCompatActivity {
 
     private TextView tvRoomDetails;
     private DatabaseReference databaseReference;
-    private String currentUsername = "Jatin"; // Replace with dynamic username from shared preferences or intent
+    private String currentUsername;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,6 +26,16 @@ public class viewroom extends AppCompatActivity {
 
         // Initialize views
         tvRoomDetails = findViewById(R.id.tvRoomDetails);
+
+        // Get the currently logged-in username from SharedPreferences
+        SharedPreferences sharedPreferences = getSharedPreferences("LoginPrefs", MODE_PRIVATE);
+        currentUsername = sharedPreferences.getString("username", null);
+
+        if (currentUsername == null) {
+            Toast.makeText(this, "Error: User not logged in!", Toast.LENGTH_SHORT).show();
+            finish(); // Close activity if no user is logged in
+            return;
+        }
 
         // Initialize Firebase Database reference
         databaseReference = FirebaseDatabase.getInstance().getReference("Users");
@@ -48,15 +59,15 @@ public class viewroom extends AppCompatActivity {
                         String roomNumber = roomSnapshot.getKey();
 
                         // Get the active status
-                        boolean isActive = roomSnapshot.child("isActive").getValue(Boolean.class);
-                        String roomStatus = isActive ? "Active" : "Inactive";
+                        Boolean isActive = roomSnapshot.child("isActive").getValue(Boolean.class);
+                        String roomStatus = (isActive != null && isActive) ? "Active" : "Inactive";
 
                         // Get the number of students
                         DataSnapshot studentsSnapshot = roomSnapshot.child("Students");
                         long studentCount = studentsSnapshot.getChildrenCount();
 
                         // Calculate available slots
-                        int maxSlots = 4;
+                        int maxSlots = 4; // Assume each room has 4 slots
                         int availableSlots = maxSlots - (int) studentCount;
                         availableSlots = Math.max(availableSlots, 0); // Ensure non-negative
 
@@ -70,7 +81,7 @@ public class viewroom extends AppCompatActivity {
                     // Set the constructed room details to the TextView
                     tvRoomDetails.setText(roomDetails.toString());
                 } else {
-                    tvRoomDetails.setText("No rooms found!");
+                    tvRoomDetails.setText("No rooms found for the user!");
                 }
             }
 

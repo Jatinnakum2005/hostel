@@ -24,7 +24,7 @@
             android:layout_width="500dp"
             android:layout_height="200dp"
             android:layout_margin="24px"
-            android:src="@drawable/logo_launcher_background" />
+            android:src="@drawable/nobg_img" />
 
         <!--username-->
         <RelativeLayout
