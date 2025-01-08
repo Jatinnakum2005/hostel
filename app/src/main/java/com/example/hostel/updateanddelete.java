@@ -60,35 +60,52 @@ public class updateanddelete extends AppCompatActivity {
             return;
         }
 
-        databaseReference.child("Jatin").child("Rooms").addListenerForSingleValueEvent(new ValueEventListener() {
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 boolean found = false;
 
-                for (DataSnapshot roomSnapshot : snapshot.getChildren()) {
-                    DataSnapshot studentsSnapshot = roomSnapshot.child("Students");
+                for (DataSnapshot userSnapshot : snapshot.getChildren()) {
+                    // Check in LivedDetails
+                    DataSnapshot livedDetailsSnapshot = userSnapshot.child("LivedDetails");
+                    if (livedDetailsSnapshot.hasChild(prn)) {
+                        found = true;
 
-                    for (DataSnapshot studentSnapshot : studentsSnapshot.getChildren()) {
-                        String studentPrn = studentSnapshot.child("prn").getValue(String.class);
+                        DataSnapshot studentSnapshot = livedDetailsSnapshot.child(prn);
+                        etName.setText(studentSnapshot.child("name").getValue(String.class));
+                        etFatherName.setText(studentSnapshot.child("fatherName").getValue(String.class));
+                        etMotherName.setText(studentSnapshot.child("motherName").getValue(String.class));
+                        etEmail.setText(studentSnapshot.child("email").getValue(String.class));
+                        etAddress.setText(studentSnapshot.child("address").getValue(String.class));
+                        etCollegeName.setText(studentSnapshot.child("collegeName").getValue(String.class));
+                        spinnerLivingStatus.setSelection(1); // Set to "Lived"
+                        break;
+                    }
 
-                        if (prn.equals(studentPrn)) {
-                            found = true;
+                    // Check in Rooms
+                    DataSnapshot roomsSnapshot = userSnapshot.child("Rooms");
+                    for (DataSnapshot roomSnapshot : roomsSnapshot.getChildren()) {
+                        DataSnapshot studentsSnapshot = roomSnapshot.child("Students");
 
-                            etName.setText(studentSnapshot.child("name").getValue(String.class));
-                            etFatherName.setText(studentSnapshot.child("fatherName").getValue(String.class));
-                            etMotherName.setText(studentSnapshot.child("motherName").getValue(String.class));
-                            etEmail.setText(studentSnapshot.child("email").getValue(String.class));
-                            etAddress.setText(studentSnapshot.child("address").getValue(String.class));
-                            etCollegeName.setText(studentSnapshot.child("collegeName").getValue(String.class));
-                            etRoomNumber.setText(roomSnapshot.getKey());
+                        for (DataSnapshot studentSnapshot : studentsSnapshot.getChildren()) {
+                            String studentPrn = studentSnapshot.child("prn").getValue(String.class);
 
-                            String livingStatus = studentSnapshot.child("livingStatus").getValue(String.class);
-                            if (livingStatus != null) {
-                                int position = livingStatus.equals("Living") ? 0 : 1;
-                                spinnerLivingStatus.setSelection(position);
+                            if (prn.equals(studentPrn)) {
+                                found = true;
+
+                                etName.setText(studentSnapshot.child("name").getValue(String.class));
+                                etFatherName.setText(studentSnapshot.child("fatherName").getValue(String.class));
+                                etMotherName.setText(studentSnapshot.child("motherName").getValue(String.class));
+                                etEmail.setText(studentSnapshot.child("email").getValue(String.class));
+                                etAddress.setText(studentSnapshot.child("address").getValue(String.class));
+                                etCollegeName.setText(studentSnapshot.child("collegeName").getValue(String.class));
+                                etRoomNumber.setText(roomSnapshot.getKey());
+                                spinnerLivingStatus.setSelection(0); // Set to "Living"
+                                break;
                             }
-                            break;
                         }
+
+                        if (found) break;
                     }
 
                     if (found) break;
@@ -121,35 +138,44 @@ public class updateanddelete extends AppCompatActivity {
         String collegeName = etCollegeName.getText().toString().trim();
         String livingStatus = spinnerLivingStatus.getSelectedItem().toString();
 
-        databaseReference.child("Jatin").child("Rooms").addListenerForSingleValueEvent(new ValueEventListener() {
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 boolean studentFound = false;
                 String roomNumber = null;
+                String userKey = null;
 
-                // Search for the PRN across rooms
-                for (DataSnapshot roomSnapshot : snapshot.getChildren()) {
-                    String currentRoomNumber = roomSnapshot.getKey();
-                    DataSnapshot studentsSnapshot = roomSnapshot.child("Students");
+                // Search for the PRN across users
+                for (DataSnapshot userSnapshot : snapshot.getChildren()) {
+                    userKey = userSnapshot.getKey();
 
-                    for (DataSnapshot studentSnapshot : studentsSnapshot.getChildren()) {
-                        String studentPrn = studentSnapshot.child("prn").getValue(String.class);
+                    // Check in Rooms
+                    DataSnapshot roomsSnapshot = userSnapshot.child("Rooms");
+                    for (DataSnapshot roomSnapshot : roomsSnapshot.getChildren()) {
+                        String currentRoomNumber = roomSnapshot.getKey();
+                        DataSnapshot studentsSnapshot = roomSnapshot.child("Students");
 
-                        if (prn.equals(studentPrn)) {
-                            studentFound = true;
-                            roomNumber = currentRoomNumber;
-                            break;
+                        for (DataSnapshot studentSnapshot : studentsSnapshot.getChildren()) {
+                            String studentPrn = studentSnapshot.child("prn").getValue(String.class);
+
+                            if (prn.equals(studentPrn)) {
+                                studentFound = true;
+                                roomNumber = currentRoomNumber;
+                                break;
+                            }
                         }
+
+                        if (studentFound) break;
                     }
 
                     if (studentFound) break;
                 }
 
-                if (studentFound && roomNumber != null) {
-                    DatabaseReference studentRef = databaseReference.child("Jatin").child("Rooms").child(roomNumber).child("Students").child(prn);
+                if (studentFound && roomNumber != null && userKey != null) {
+                    DatabaseReference studentRef = databaseReference.child(userKey).child("Rooms").child(roomNumber).child("Students").child(prn);
 
                     if (livingStatus.equals("Lived")) {
-                        DatabaseReference livedRef = databaseReference.child("Jatin").child("LivedDetails").child(prn);
+                        DatabaseReference livedRef = databaseReference.child(userKey).child("LivedDetails").child(prn);
 
                         studentRef.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
@@ -204,23 +230,56 @@ public class updateanddelete extends AppCompatActivity {
 
     private void deleteStudent() {
         String prn = etPrn.getText().toString().trim();
-        String roomNumber = etRoomNumber.getText().toString().trim();
+        String livingStatus = spinnerLivingStatus.getSelectedItem().toString();
 
-        if (prn.isEmpty() || roomNumber.isEmpty()) {
-            Toast.makeText(this, "Please provide PRN and room number", Toast.LENGTH_SHORT).show();
+        if (prn.isEmpty()) {
+            Toast.makeText(this, "Please provide PRN", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        databaseReference.child("Jatin").child("Rooms").child(roomNumber).child("Students").child(prn)
-                .removeValue()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        Toast.makeText(updateanddelete.this, "Student deleted", Toast.LENGTH_SHORT).show();
-                        clearFields();
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                boolean deleted = false;
+
+                for (DataSnapshot userSnapshot : snapshot.getChildren()) {
+                    // Delete from LivedDetails if "Lived" is selected
+                    if (livingStatus.equals("Lived")) {
+                        DataSnapshot livedDetailsSnapshot = userSnapshot.child("LivedDetails");
+                        if (livedDetailsSnapshot.hasChild(prn)) {
+                            livedDetailsSnapshot.child(prn).getRef().removeValue();
+                            deleted = true;
+                            break;
+                        }
                     } else {
-                        Toast.makeText(updateanddelete.this, "Failed to delete student", Toast.LENGTH_SHORT).show();
+                        // Delete from Rooms if "Living" is selected
+                        DataSnapshot roomsSnapshot = userSnapshot.child("Rooms");
+                        for (DataSnapshot roomSnapshot : roomsSnapshot.getChildren()) {
+                            DataSnapshot studentsSnapshot = roomSnapshot.child("Students");
+                            if (studentsSnapshot.hasChild(prn)) {
+                                studentsSnapshot.child(prn).getRef().removeValue();
+                                deleted = true;
+                                break;
+                            }
+                        }
                     }
-                });
+
+                    if (deleted) break;
+                }
+
+                if (deleted) {
+                    Toast.makeText(updateanddelete.this, "Student deleted successfully", Toast.LENGTH_SHORT).show();
+                    clearFields();
+                } else {
+                    Toast.makeText(updateanddelete.this, "PRN not found", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(updateanddelete.this, "Failed to delete student", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void clearFields() {
