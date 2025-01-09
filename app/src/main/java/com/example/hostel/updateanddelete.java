@@ -1,14 +1,10 @@
 package com.example.hostel;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.*;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.*;
 
 public class updateanddelete extends AppCompatActivity {
@@ -18,25 +14,11 @@ public class updateanddelete extends AppCompatActivity {
     private Button btnSearch, btnUpdate, btnDelete, btnClear;
 
     private DatabaseReference databaseReference;
-    private String currentUserId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_updateanddelete);
-
-        // Get the current user
-        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-        if (currentUser != null) {
-            currentUserId = currentUser.getUid(); // Get the unique user ID
-        } else {
-            // Redirect to LoginActivity if user is not logged in
-            Toast.makeText(this, "Please log in to access this feature", Toast.LENGTH_SHORT).show();
-            Intent loginIntent = new Intent(this, MainActivity.class);
-            startActivity(loginIntent);
-            finish(); // Close the current activity
-            return;
-        }
 
         // Initialize Firebase reference
         databaseReference = FirebaseDatabase.getInstance().getReference("Users");
@@ -78,35 +60,52 @@ public class updateanddelete extends AppCompatActivity {
             return;
         }
 
-        databaseReference.child(currentUserId).child("Rooms").addListenerForSingleValueEvent(new ValueEventListener() {
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 boolean found = false;
 
-                for (DataSnapshot roomSnapshot : snapshot.getChildren()) {
-                    DataSnapshot studentsSnapshot = roomSnapshot.child("Students");
+                for (DataSnapshot userSnapshot : snapshot.getChildren()) {
+                    // Check in LivedDetails
+                    DataSnapshot livedDetailsSnapshot = userSnapshot.child("LivedDetails");
+                    if (livedDetailsSnapshot.hasChild(prn)) {
+                        found = true;
 
-                    for (DataSnapshot studentSnapshot : studentsSnapshot.getChildren()) {
-                        String studentPrn = studentSnapshot.child("prn").getValue(String.class);
+                        DataSnapshot studentSnapshot = livedDetailsSnapshot.child(prn);
+                        etName.setText(studentSnapshot.child("name").getValue(String.class));
+                        etFatherName.setText(studentSnapshot.child("fatherName").getValue(String.class));
+                        etMotherName.setText(studentSnapshot.child("motherName").getValue(String.class));
+                        etEmail.setText(studentSnapshot.child("email").getValue(String.class));
+                        etAddress.setText(studentSnapshot.child("address").getValue(String.class));
+                        etCollegeName.setText(studentSnapshot.child("collegeName").getValue(String.class));
+                        spinnerLivingStatus.setSelection(1); // Set to "Lived"
+                        break;
+                    }
 
-                        if (prn.equals(studentPrn)) {
-                            found = true;
+                    // Check in Rooms
+                    DataSnapshot roomsSnapshot = userSnapshot.child("Rooms");
+                    for (DataSnapshot roomSnapshot : roomsSnapshot.getChildren()) {
+                        DataSnapshot studentsSnapshot = roomSnapshot.child("Students");
 
-                            etName.setText(studentSnapshot.child("name").getValue(String.class));
-                            etFatherName.setText(studentSnapshot.child("fatherName").getValue(String.class));
-                            etMotherName.setText(studentSnapshot.child("motherName").getValue(String.class));
-                            etEmail.setText(studentSnapshot.child("email").getValue(String.class));
-                            etAddress.setText(studentSnapshot.child("address").getValue(String.class));
-                            etCollegeName.setText(studentSnapshot.child("collegeName").getValue(String.class));
-                            etRoomNumber.setText(roomSnapshot.getKey());
+                        for (DataSnapshot studentSnapshot : studentsSnapshot.getChildren()) {
+                            String studentPrn = studentSnapshot.child("prn").getValue(String.class);
 
-                            String livingStatus = studentSnapshot.child("livingStatus").getValue(String.class);
-                            if (livingStatus != null) {
-                                int position = livingStatus.equals("Living") ? 0 : 1;
-                                spinnerLivingStatus.setSelection(position);
+                            if (prn.equals(studentPrn)) {
+                                found = true;
+
+                                etName.setText(studentSnapshot.child("name").getValue(String.class));
+                                etFatherName.setText(studentSnapshot.child("fatherName").getValue(String.class));
+                                etMotherName.setText(studentSnapshot.child("motherName").getValue(String.class));
+                                etEmail.setText(studentSnapshot.child("email").getValue(String.class));
+                                etAddress.setText(studentSnapshot.child("address").getValue(String.class));
+                                etCollegeName.setText(studentSnapshot.child("collegeName").getValue(String.class));
+                                etRoomNumber.setText(roomSnapshot.getKey());
+                                spinnerLivingStatus.setSelection(0); // Set to "Living"
+                                break;
                             }
-                            break;
                         }
+
+                        if (found) break;
                     }
 
                     if (found) break;
@@ -137,63 +136,100 @@ public class updateanddelete extends AppCompatActivity {
         String email = etEmail.getText().toString().trim();
         String address = etAddress.getText().toString().trim();
         String collegeName = etCollegeName.getText().toString().trim();
-        String roomNumber = etRoomNumber.getText().toString().trim();
         String livingStatus = spinnerLivingStatus.getSelectedItem().toString();
 
-        if (roomNumber.isEmpty()) {
-            Toast.makeText(this, "Invalid room number", Toast.LENGTH_SHORT).show();
-            return;
-        }
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                boolean studentFound = false;
+                String roomNumber = null;
+                String userKey = null;
 
-        DatabaseReference studentRef = databaseReference.child(currentUserId).child("Rooms").child(roomNumber).child("Students").child(prn);
+                // Search for the PRN across users
+                for (DataSnapshot userSnapshot : snapshot.getChildren()) {
+                    userKey = userSnapshot.getKey();
 
-        if (livingStatus.equals("Lived")) {
-            DatabaseReference livedRef = databaseReference.child(currentUserId).child("LivedStudents").child(prn);
+                    // Check in Rooms
+                    DataSnapshot roomsSnapshot = userSnapshot.child("Rooms");
+                    for (DataSnapshot roomSnapshot : roomsSnapshot.getChildren()) {
+                        String currentRoomNumber = roomSnapshot.getKey();
+                        DataSnapshot studentsSnapshot = roomSnapshot.child("Students");
 
-            studentRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    if (snapshot.exists()) {
-                        livedRef.setValue(snapshot.getValue()).addOnCompleteListener(task -> {
-                            if (task.isSuccessful()) {
-                                studentRef.removeValue().addOnCompleteListener(removeTask -> {
-                                    if (removeTask.isSuccessful()) {
-                                        Toast.makeText(updateanddelete.this, "Student moved to LivedStudents", Toast.LENGTH_SHORT).show();
-                                        clearFields();
-                                    } else {
-                                        Toast.makeText(updateanddelete.this, "Failed to remove student from current room", Toast.LENGTH_SHORT).show();
-                                    }
-                                });
-                            } else {
-                                Toast.makeText(updateanddelete.this, "Failed to move student to LivedStudents", Toast.LENGTH_SHORT).show();
+                        for (DataSnapshot studentSnapshot : studentsSnapshot.getChildren()) {
+                            String studentPrn = studentSnapshot.child("prn").getValue(String.class);
+
+                            if (prn.equals(studentPrn)) {
+                                studentFound = true;
+                                roomNumber = currentRoomNumber;
+                                break;
+                            }
+                        }
+
+                        if (studentFound) break;
+                    }
+
+                    if (studentFound) break;
+                }
+
+                if (studentFound && roomNumber != null && userKey != null) {
+                    DatabaseReference studentRef = databaseReference.child(userKey).child("Rooms").child(roomNumber).child("Students").child(prn);
+
+                    if (livingStatus.equals("Lived")) {
+                        DatabaseReference livedRef = databaseReference.child(userKey).child("LivedDetails").child(prn);
+
+                        studentRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot studentSnapshot) {
+                                if (studentSnapshot.exists()) {
+                                    livedRef.setValue(studentSnapshot.getValue()).addOnCompleteListener(task -> {
+                                        if (task.isSuccessful()) {
+                                            studentRef.removeValue().addOnCompleteListener(removeTask -> {
+                                                if (removeTask.isSuccessful()) {
+                                                    Toast.makeText(updateanddelete.this, "Student moved to LivedDetails", Toast.LENGTH_SHORT).show();
+                                                    clearFields();
+                                                } else {
+                                                    Toast.makeText(updateanddelete.this, "Failed to remove student from current room", Toast.LENGTH_SHORT).show();
+                                                }
+                                            });
+                                        } else {
+                                            Toast.makeText(updateanddelete.this, "Failed to move student to LivedDetails", Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+                                } else {
+                                    Toast.makeText(updateanddelete.this, "Student not found in the current room", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+                                Toast.makeText(updateanddelete.this, "Failed to fetch student data", Toast.LENGTH_SHORT).show();
                             }
                         });
                     } else {
-                        Toast.makeText(updateanddelete.this, "Student not found in the current room", Toast.LENGTH_SHORT).show();
+                        studentRef.child("name").setValue(name);
+                        studentRef.child("fatherName").setValue(fatherName);
+                        studentRef.child("motherName").setValue(motherName);
+                        studentRef.child("email").setValue(email);
+                        studentRef.child("address").setValue(address);
+                        studentRef.child("collegeName").setValue(collegeName);
+                        studentRef.child("livingStatus").setValue(livingStatus);
+
+                        Toast.makeText(updateanddelete.this, "Student details updated", Toast.LENGTH_SHORT).show();
                     }
+                } else {
+                    Toast.makeText(updateanddelete.this, "PRN not found in any room", Toast.LENGTH_SHORT).show();
                 }
+            }
 
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-                    Toast.makeText(updateanddelete.this, "Failed to fetch student data", Toast.LENGTH_SHORT).show();
-                }
-            });
-        } else {
-            studentRef.child("name").setValue(name);
-            studentRef.child("fatherName").setValue(fatherName);
-            studentRef.child("motherName").setValue(motherName);
-            studentRef.child("email").setValue(email);
-            studentRef.child("address").setValue(address);
-            studentRef.child("collegeName").setValue(collegeName);
-            studentRef.child("livingStatus").setValue(livingStatus);
-
-            Toast.makeText(this, "Student details updated", Toast.LENGTH_SHORT).show();
-        }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(updateanddelete.this, "Failed to fetch room data", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void deleteStudent() {
         String prn = etPrn.getText().toString().trim();
-        String roomNumber = etRoomNumber.getText().toString().trim();
         String livingStatus = spinnerLivingStatus.getSelectedItem().toString();
 
         if (prn.isEmpty()) {
@@ -201,34 +237,49 @@ public class updateanddelete extends AppCompatActivity {
             return;
         }
 
-        if (livingStatus.equals("Lived")) {
-            databaseReference.child(currentUserId).child("LivedStudents").child(prn)
-                    .removeValue()
-                    .addOnCompleteListener(task -> {
-                        if (task.isSuccessful()) {
-                            Toast.makeText(updateanddelete.this, "Student deleted from LivedStudents", Toast.LENGTH_SHORT).show();
-                            clearFields();
-                        } else {
-                            Toast.makeText(updateanddelete.this, "Failed to delete student from LivedStudents", Toast.LENGTH_SHORT).show();
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                boolean deleted = false;
+
+                for (DataSnapshot userSnapshot : snapshot.getChildren()) {
+                    // Delete from LivedDetails if "Lived" is selected
+                    if (livingStatus.equals("Lived")) {
+                        DataSnapshot livedDetailsSnapshot = userSnapshot.child("LivedDetails");
+                        if (livedDetailsSnapshot.hasChild(prn)) {
+                            livedDetailsSnapshot.child(prn).getRef().removeValue();
+                            deleted = true;
+                            break;
                         }
-                    });
-        } else {
-            if (roomNumber.isEmpty()) {
-                Toast.makeText(this, "Please provide room number for non-Lived students", Toast.LENGTH_SHORT).show();
-                return;
+                    } else {
+                        // Delete from Rooms if "Living" is selected
+                        DataSnapshot roomsSnapshot = userSnapshot.child("Rooms");
+                        for (DataSnapshot roomSnapshot : roomsSnapshot.getChildren()) {
+                            DataSnapshot studentsSnapshot = roomSnapshot.child("Students");
+                            if (studentsSnapshot.hasChild(prn)) {
+                                studentsSnapshot.child(prn).getRef().removeValue();
+                                deleted = true;
+                                break;
+                            }
+                        }
+                    }
+
+                    if (deleted) break;
+                }
+
+                if (deleted) {
+                    Toast.makeText(updateanddelete.this, "Student deleted successfully", Toast.LENGTH_SHORT).show();
+                    clearFields();
+                } else {
+                    Toast.makeText(updateanddelete.this, "PRN not found", Toast.LENGTH_SHORT).show();
+                }
             }
 
-            databaseReference.child(currentUserId).child("Rooms").child(roomNumber).child("Students").child(prn)
-                    .removeValue()
-                    .addOnCompleteListener(task -> {
-                        if (task.isSuccessful()) {
-                            Toast.makeText(updateanddelete.this, "Student deleted from current room", Toast.LENGTH_SHORT).show();
-                            clearFields();
-                        } else {
-                            Toast.makeText(updateanddelete.this, "Failed to delete student from current room", Toast.LENGTH_SHORT).show();
-                        }
-                    });
-        }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(updateanddelete.this, "Failed to delete student", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void clearFields() {

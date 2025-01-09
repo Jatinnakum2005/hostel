@@ -212,8 +212,8 @@ public class newstudent extends AppCompatActivity {
         student.put("collegeName", collegeName);
         student.put("prn", prn);
 
-        // Save student data to Firebase
-        roomRef.child(name).setValue(student)
+        // Save student data to Firebase using PRN as the key
+        roomRef.child(prn).setValue(student)
                 .addOnSuccessListener(aVoid -> {
                     Toast.makeText(newstudent.this, "Student added successfully!", Toast.LENGTH_SHORT).show();
                     clearFields();
