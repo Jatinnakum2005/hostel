@@ -59,17 +59,31 @@
                 android:inputType="textPassword" />
         </com.google.android.material.textfield.TextInputLayout>
 
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+
         <!-- Login Button -->
         <Button
             android:id="@+id/loginButton"
             android:layout_width="188dp"
-            android:layout_height="66dp"
+            android:layout_height="50dp"
             android:layout_marginTop="24dp"
             android:backgroundTint="#007BFF"
             android:text="LOGIN"
             android:textColor="@android:color/white"
             android:textSize="16sp"
             android:textStyle="bold" />
+
+            <ProgressBar
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:paddingTop="15dp"
+                android:id="@+id/progrssbarlogin"/>
+
+        </FrameLayout>
 
         <!-- Register Section -->
         <LinearLayout
