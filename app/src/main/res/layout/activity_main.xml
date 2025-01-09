@@ -21,14 +21,14 @@
         <ImageView
             android:layout_width="300dp"
             android:layout_height="150dp"
-            android:layout_marginBottom="24dp"
+            android:layout_marginBottom="32dp"
             android:src="@drawable/logo" />
 
         <!-- Username Field -->
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp">
+            android:layout_marginBottom="20dp">
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
@@ -40,7 +40,9 @@
                     android:id="@+id/usernameInput"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="text" />
+                    android:inputType="text"
+                    android:textColor="@android:color/black"
+                    android:hintTextColor="@android:color/darker_gray" />
             </com.google.android.material.textfield.TextInputLayout>
         </RelativeLayout>
 
@@ -50,40 +52,41 @@
             android:layout_height="wrap_content"
             android:hint="PASSWORD"
             app:passwordToggleEnabled="true"
-            android:background="@drawable/rounded_box_white">
+            android:background="@drawable/rounded_box_white"
+            android:layout_marginBottom="20dp">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/passwordInput"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textPassword" />
+                android:inputType="textPassword"
+                android:textColor="@android:color/black"
+                android:hintTextColor="@android:color/darker_gray" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <FrameLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
 
-
-        <!-- Login Button -->
-        <Button
-            android:id="@+id/loginButton"
-            android:layout_width="188dp"
-            android:layout_height="50dp"
-            android:layout_marginTop="24dp"
-            android:backgroundTint="#007BFF"
-            android:text="LOGIN"
-            android:textColor="@android:color/white"
-            android:textSize="16sp"
-            android:textStyle="bold" />
+            <!-- Login Button -->
+            <Button
+                android:id="@+id/loginButton"
+                android:layout_width="188dp"
+                android:layout_height="50dp"
+                android:layout_marginTop="24dp"
+                android:backgroundTint="#007BFF"
+                android:text="LOGIN"
+                android:textColor="@android:color/white"
+                android:textSize="16sp"
+                android:textStyle="bold" />
 
             <ProgressBar
+                android:id="@+id/progrssbarlogin"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:paddingTop="15dp"
-                android:visibility="gone"
-                android:id="@+id/progrssbarlogin"/>
-
+                android:visibility="gone" />
         </FrameLayout>
 
         <!-- Register Section -->
@@ -92,7 +95,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center"
-            android:layout_marginTop="24dp">
+            android:layout_marginTop="32dp">
 
             <TextView
                 android:layout_width="wrap_content"
