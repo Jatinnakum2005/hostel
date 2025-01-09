@@ -1,93 +1,247 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
-    tools:context=".mainpage">
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="@drawable/bgofapp"
+    tools:context=".MainActivity">
 
-    <!-- Button for Manage Room -->
-    <Button
-        android:id="@+id/button8"
-        android:layout_width="298dp"
-        android:layout_height="56dp"
-        android:text="Manage Room"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintVertical_bias="0.1" />
+    <!-- Dashboard Grid -->
+    <GridLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:columnCount="2"
+        android:rowCount="4"
+        android:layout_gravity="center"
+        android:padding="8dp">
 
-    <!-- Button for New Student -->
-    <Button
-        android:id="@+id/button9"
-        android:layout_width="298dp"
-        android:layout_height="56dp"
-        android:text="New Student"
-        app:layout_constraintTop_toBottomOf="@id/button8"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintVertical_bias="0.05" />
+        <!-- Button 1 -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="150dp"
+            android:layout_margin="8dp"
+            android:orientation="vertical"
+            android:layout_columnWeight="1"
+            android:gravity="center"
+            android:background="@drawable/rounded_box">
 
-    <!-- Button for Update and Delete Students -->
-    <Button
-        android:id="@+id/button10"
-        android:layout_width="298dp"
-        android:layout_height="56dp"
-        android:text="Update and Delete Students"
-        app:layout_constraintTop_toBottomOf="@id/button9"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintVertical_bias="0.05" />
+            <ImageView
+                android:id="@+id/img_room"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:src="@drawable/room"
+                android:contentDescription="Manage room" />
 
-    <!-- Button for Student Fees -->
-    <Button
-        android:id="@+id/button11"
-        android:layout_width="298dp"
-        android:layout_height="56dp"
-        android:text="Student Fees"
-        app:layout_constraintTop_toBottomOf="@id/button10"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintVertical_bias="0.05" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text=" Manage Room"
+                android:textColor="#000000"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:gravity="center" />
+        </LinearLayout>
 
-    <!-- Button for All Students Living -->
-    <Button
-        android:id="@+id/button12"
-        android:layout_width="298dp"
-        android:layout_height="56dp"
-        android:text="All Students Living"
-        app:layout_constraintTop_toBottomOf="@id/button11"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintVertical_bias="0.05" />
+        <!-- Button 2 -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="150dp"
+            android:layout_margin="8dp"
+            android:orientation="vertical"
+            android:layout_columnWeight="1"
+            android:gravity="center"
+            android:background="@drawable/rounded_box">
 
-    <!-- Button for Leaved Students -->
-    <Button
-        android:id="@+id/button13"
-        android:layout_width="298dp"
-        android:layout_height="56dp"
-        android:text="Leaved Students"
-        app:layout_constraintTop_toBottomOf="@id/button12"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintVertical_bias="0.05" />
+            <ImageView
+                android:id="@+id/img_student"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:src="@drawable/student"
+                android:contentDescription="All Student" />
 
-    <Button
-        android:id="@+id/button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="36dp"
-        android:text="Logout"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="New Student"
+                android:textColor="#000000"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:gravity="center" />
+        </LinearLayout>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <!-- Button 3 -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="150dp"
+            android:layout_margin="8dp"
+            android:orientation="vertical"
+            android:layout_columnWeight="1"
+            android:gravity="center"
+            android:background="@drawable/rounded_box">
+
+            <ImageView
+                android:id="@+id/img_undesignated_student"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:src="@drawable/unddstudent"
+                android:contentDescription="Undesignated Student" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Uapdate and delete student"
+                android:textColor="#000000"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:gravity="center" />
+        </LinearLayout>
+
+        <!-- Button 4 -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="150dp"
+            android:layout_margin="8dp"
+            android:orientation="vertical"
+            android:layout_columnWeight="1"
+            android:gravity="center"
+            android:background="@drawable/rounded_box">
+
+            <ImageView
+                android:id="@+id/img_student_fees"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:src="@drawable/studentfees"
+                android:contentDescription="Student Fees" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Student Fees"
+                android:textColor="#000000"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:gravity="center" />
+        </LinearLayout>
+
+        <!-- Button 5 -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="150dp"
+            android:layout_margin="8dp"
+            android:orientation="vertical"
+            android:layout_columnWeight="1"
+            android:gravity="center"
+            android:background="@drawable/rounded_box">
+
+            <ImageView
+                android:id="@+id/img_living_student"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:src="@drawable/livingstudent"
+                android:contentDescription="Living Student" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="All Living Student"
+                android:textColor="#000000"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:gravity="center" />
+        </LinearLayout>
+
+        <!-- Button 6 -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="150dp"
+            android:layout_margin="8dp"
+            android:orientation="vertical"
+            android:layout_columnWeight="1"
+            android:gravity="center"
+            android:background="@drawable/rounded_box">
+
+            <ImageView
+                android:id="@+id/img_leaved_student"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:src="@drawable/leavedstudnt"
+                android:contentDescription="Leaved Student" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text=" All Leaved Student"
+                android:textColor="#000000"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:gravity="center" />
+        </LinearLayout>
+
+        <!-- Button 7 -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="150dp"
+            android:layout_margin="8dp"
+            android:orientation="vertical"
+            android:layout_columnWeight="1"
+            android:gravity="center"
+            android:background="@drawable/rounded_box">
+
+            <ImageView
+                android:id="@+id/img_feedback"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:src="@drawable/feedback"
+                android:contentDescription="Feedback" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Feedback"
+                android:textColor="#000000"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:gravity="center" />
+        </LinearLayout>
+
+        <!-- Button 8 -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="150dp"
+            android:layout_margin="8dp"
+            android:orientation="vertical"
+            android:layout_columnWeight="1"
+            android:gravity="center"
+            android:background="@drawable/rounded_box">
+
+            <ImageView
+                android:id="@+id/img_logout"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:src="@drawable/logout"
+                android:contentDescription="Logout" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Logout"
+                android:textColor="#000000"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:gravity="center" />
+        </LinearLayout>
+
+    </GridLayout>
+
+</LinearLayout>

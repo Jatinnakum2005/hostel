@@ -13,6 +13,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/bgofapp"
         android:orientation="vertical"
         android:padding="16dp">
 
@@ -27,7 +28,7 @@
             android:layout_height="130dp"
             android:layout_gravity="center"
             android:layout_marginTop="-13dp"
-            android:src="@drawable/logo_launcher_background" />
+            android:src="@drawable/logo" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -49,18 +50,17 @@
             android:textColor="@color/black"
             android:padding="12dp"/>
 
-        <EditText
-            android:id="@+id/usernameInput"
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Enter User-Name"
-            android:drawablePadding="20dp"
-            android:padding="12dp"
-            android:textColorHint="@color/black"
-            android:textColor="@color/black"
-            android:inputType="textPersonName"
-            android:textStyle="bold"
-            />
+            android:layout_height="wrap_content">
+
+            <com.google.android.material.textfield.TextInputEditText
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                android:id="@+id/taxtinpputlayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="UAERNAME" />
+        </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Email Input -->
         <TextView
@@ -71,18 +71,17 @@
             android:padding="12dp"
             android:textColor="@color/black" />
 
-        <EditText
-            android:id="@+id/emailInput"
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Enter E-Mail"
-            android:drawablePadding="20dp"
-            android:textColorHint="@color/black"
-            android:padding="12dp"
-            android:textColor="@color/black"
-            android:inputType="textEmailAddress"
-            android:textStyle="bold"
-            />
+            android:layout_height="wrap_content">
+
+            <com.google.android.material.textfield.TextInputEditText
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                android:id="@+id/taxtinpputlayout2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="E-MAIL" />
+        </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Phone Input -->
         <TextView
@@ -92,19 +91,17 @@
             android:padding="12dp"
             android:textColor="@color/black"/>
 
-        <EditText
-            android:id="@+id/phoneInput"
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Enter Phone"
-            android:padding="12dp"
-            android:textColorHint="@color/black"
-            android:inputType="phone"
-            android:textColor="@color/black"
-            android:drawablePadding="20dp"
-            android:textStyle="bold"
-            />
+            android:layout_height="wrap_content">
 
+            <com.google.android.material.textfield.TextInputEditText
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                android:id="@+id/taxtinpputlayout3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="PHONE NUMBER" />
+        </com.google.android.material.textfield.TextInputLayout>
         <!-- Password Input -->
         <TextView
             android:layout_width="match_parent"

@@ -1,131 +1,99 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--main page-->
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@drawable/bgofapp"
     android:overScrollMode="never"
-    android:paddingTop="50dp"
     android:scrollbars="none"
     tools:context=".MainActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginStart="50dp"
-        android:layout_marginEnd="50dp"
         android:gravity="center"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="16dp">
 
+        <!-- Logo -->
         <ImageView
-            android:layout_width="500dp"
-            android:layout_height="200dp"
-            android:layout_margin="24px"
-            android:src="@drawable/nobg_img" />
+            android:layout_width="300dp"
+            android:layout_height="150dp"
+            android:layout_marginBottom="24dp"
+            android:src="@drawable/logo" />
 
-        <!--username-->
+        <!-- Username Field -->
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="50px">
+            android:layout_marginBottom="16dp">
 
-            <ImageView
-                android:id="@+id/leftIcon"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_alignParentStart="true"
-                android:layout_marginStart="14dp"
-                android:layout_centerVertical="true" />
-
-            <EditText
-                android:id="@+id/loginusername"
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="130px"
-                android:layout_toEndOf="@id/leftIcon"
-                android:layout_marginStart="17dp"
+                android:layout_height="wrap_content"
                 android:hint="USERNAME"
-                android:textColorHint="@color/black"
-                android:textColor="@color/black" />
+                android:background="@drawable/rounded_box_white">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/usernameInput"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text" />
+            </com.google.android.material.textfield.TextInputLayout>
         </RelativeLayout>
 
-
-        <!--password-->
-
+        <!-- Password Field -->
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:hint="PASSWORD"
             app:passwordToggleEnabled="true"
-            app:passwordToggleTint="@color/black"
-            android:textColorHint="@color/black">
+            android:background="@drawable/rounded_box_white">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/loginpass"
-                android:hint="PASSWORD"
+                android:id="@+id/passwordInput"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:drawablePadding="20dp"
-                android:textColor="@color/black"
-                android:padding="13dp"
-                android:inputType="textPassword"/>
-
+                android:inputType="textPassword" />
         </com.google.android.material.textfield.TextInputLayout>
 
+        <!-- Login Button -->
+        <Button
+            android:id="@+id/loginButton"
+            android:layout_width="188dp"
+            android:layout_height="66dp"
+            android:layout_marginTop="24dp"
+            android:backgroundTint="#007BFF"
+            android:text="LOGIN"
+            android:textColor="@android:color/white"
+            android:textSize="16sp"
+            android:textStyle="bold" />
 
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <!--login button-->
-            <Button
-                android:id="@+id/loginbtn"
-                android:layout_width="match_parent"
-                android:layout_height="150px"
-                android:layout_marginTop="24px"
-                android:backgroundTint="@color/white"
-                android:text="LOGIN"
-                android:textColor="@color/black"
-                android:textSize="18dp"
-                android:textStyle="bold" />
-
-            <ProgressBar
-                android:layout_width="35dp"
-                android:layout_height="35dp"
-                android:id="@+id/progrssbarlogin"
-                android:layout_gravity="center"
-                android:visibility="gone"/>
-        </FrameLayout>
-
-
+        <!-- Register Section -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginTop="24dp">
 
-            <!--not a member-->
             <TextView
-                android:layout_width="170dp"
-                android:layout_height="match_parent"
-                android:layout_marginStart="15dp"
-                android:layout_marginTop="50px"
-                android:layout_marginEnd="10dp"
-                android:text="NOT A MEMBER?"
-                android:textColor="@color/black"
-                android:textSize="55px"
-                android:textStyle="bold"/>
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="NOT A MEMBER? "
+                android:textColor="@android:color/black"
+                android:textSize="14sp" />
 
-            <!--register button-->
             <TextView
-                android:id="@+id/registerbtn"
-                android:layout_width="100dp"
-                android:layout_height="match_parent"
-                android:layout_marginTop="50px"
+                android:id="@+id/registerButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:text="REGISTER"
-                android:textColor="@color/black"
-                android:textSize="55px"
-                android:textStyle="bold"/>
+                android:textColor="#007BFF"
+                android:textSize="14sp"
+                android:textStyle="bold" />
         </LinearLayout>
     </LinearLayout>
 </ScrollView>
