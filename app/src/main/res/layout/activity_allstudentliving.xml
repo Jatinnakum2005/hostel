@@ -4,11 +4,14 @@
     android:orientation="vertical"
     android:padding="16dp">
 
-    <Spinner
-        android:id="@+id/spinner"
+    <EditText
+        android:id="@+id/searchEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:spinnerMode="dropdown" />
+        android:hint="Search by PRN"
+        android:padding="12dp"
+        android:textSize="16sp"
+        android:inputType="text" />
 
     <TextView
         android:id="@+id/studentDetailsTextView"
@@ -16,5 +19,5 @@
         android:layout_height="wrap_content"
         android:padding="16dp"
         android:textSize="16sp"
-        android:text="Select a student to view details." />
+        android:text="Fetching data..." />
 </LinearLayout>

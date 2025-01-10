@@ -3,10 +3,9 @@ package com.example.hostel;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Spinner;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,19 +18,12 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-
 public class allstudentliving extends AppCompatActivity {
 
-    private Spinner spinner;
+    private EditText searchEditText;
     private TextView studentDetailsTextView;
 
     private DatabaseReference databaseReference;
-    private ArrayList<String> studentList; // PRN list
-    private Map<String, Map<String, String>> studentDetailsMap; // Map to store details of each student
-    private String selectedPRN = "";
 
     private SharedPreferences sharedPreferences;
 
@@ -55,53 +47,61 @@ public class allstudentliving extends AppCompatActivity {
         databaseReference = FirebaseDatabase.getInstance().getReference("Users").child(username).child("LivingStudent");
 
         // Initialize UI components
-        spinner = findViewById(R.id.spinner);
+        searchEditText = findViewById(R.id.searchEditText);
         studentDetailsTextView = findViewById(R.id.studentDetailsTextView);
 
-        studentList = new ArrayList<>();
-        studentDetailsMap = new HashMap<>();
+        // Fetch all students initially
+        fetchAllStudentData();
 
-        // Fetch student data from Firebase
-        fetchStudentData();
-
-        // Handle Spinner item selection
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        // Add a listener to the search box
+        searchEditText.addTextChangedListener(new TextWatcher() {
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                selectedPRN = studentList.get(position); // Get the selected PRN
-                displayStudentDetails(selectedPRN); // Display the details for the selected PRN
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                // Not needed
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                selectedPRN = "";
-                studentDetailsTextView.setText(""); // Clear the details view
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String query = s.toString().trim();
+                if (query.isEmpty()) {
+                    fetchAllStudentData(); // Fetch all data when the search box is empty
+                } else {
+                    searchStudentByPRN(query); // Fetch specific student data when searching
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                // Not needed
             }
         });
     }
 
-    // Fetch student data from Firebase Realtime Database
-    private void fetchStudentData() {
+    // Fetch all student data from Firebase Realtime Database
+    private void fetchAllStudentData() {
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                studentList.clear();
-                studentDetailsMap.clear();
+                StringBuilder detailsBuilder = new StringBuilder();
 
                 for (DataSnapshot studentSnapshot : snapshot.getChildren()) {
                     String prn = studentSnapshot.getKey(); // PRN as the key
-                    Map<String, String> studentData = (Map<String, String>) studentSnapshot.getValue();
+                    String name = studentSnapshot.child("name").getValue(String.class);
+                    String mobile = studentSnapshot.child("mobile").getValue(String.class);
+                    String room = studentSnapshot.child("room").getValue(String.class);
 
-                    if (prn != null && studentData != null) {
-                        studentList.add(prn); // Add PRN to the list
-                        studentDetailsMap.put(prn, studentData); // Store student details in the map
+                    if (prn != null && name != null && mobile != null && room != null) {
+                        detailsBuilder.append("PRN: ").append(prn).append("\n");
+                        detailsBuilder.append("Name: ").append(name).append("\n");
+                        detailsBuilder.append("Mobile: ").append(mobile).append("\n");
+                        detailsBuilder.append("Room: ").append(room).append("\n\n");
                     }
                 }
 
-                if (studentList.isEmpty()) {
-                    Toast.makeText(allstudentliving.this, "No living students found.", Toast.LENGTH_SHORT).show();
+                if (detailsBuilder.length() == 0) {
+                    studentDetailsTextView.setText("No living students found.");
                 } else {
-                    updateSpinner();
+                    studentDetailsTextView.setText(detailsBuilder.toString());
                 }
             }
 
@@ -112,29 +112,33 @@ public class allstudentliving extends AppCompatActivity {
         });
     }
 
-    // Update the spinner with student PRN list
-    private void updateSpinner() {
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, studentList);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(adapter);
-    }
+    // Search for a student by PRN
+    private void searchStudentByPRN(String prnQuery) {
+        databaseReference.child(prnQuery).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot studentSnapshot) {
+                if (studentSnapshot.exists()) {
+                    String name = studentSnapshot.child("name").getValue(String.class);
+                    String mobile = studentSnapshot.child("mobile").getValue(String.class);
+                    String room = studentSnapshot.child("room").getValue(String.class);
 
-    // Display student details for the selected PRN
-    private void displayStudentDetails(String prn) {
-        Map<String, String> studentData = studentDetailsMap.get(prn);
+                    if (name != null && mobile != null && room != null) {
+                        String studentDetails = "PRN: " + prnQuery + "\n" +
+                                "Name: " + name + "\n" +
+                                "Mobile: " + mobile + "\n" +
+                                "Room: " + room;
 
-        if (studentData != null) {
-            StringBuilder detailsBuilder = new StringBuilder();
-            detailsBuilder.append("PRN: ").append(prn).append("\n");
-            detailsBuilder.append("Name: ").append(studentData.get("name")).append("\n");
-            detailsBuilder.append("Mobile: ").append(studentData.get("mobile")).append("\n");
-            detailsBuilder.append("Room: ").append(studentData.get("room")).append("\n");
-            detailsBuilder.append("College Name: ").append(studentData.get("collegeName")).append("\n");
-            detailsBuilder.append("Address: ").append(studentData.get("address")).append("\n");
+                        studentDetailsTextView.setText(studentDetails);
+                    }
+                } else {
+                    studentDetailsTextView.setText("No student found with PRN: " + prnQuery);
+                }
+            }
 
-            studentDetailsTextView.setText(detailsBuilder.toString());
-        } else {
-            studentDetailsTextView.setText("No details available for the selected student.");
-        }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(allstudentliving.this, "Failed to fetch data: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

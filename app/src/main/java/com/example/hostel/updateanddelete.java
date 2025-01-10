@@ -11,7 +11,7 @@ import com.google.firebase.database.*;
 
 public class updateanddelete extends AppCompatActivity {
 
-    private EditText etPrn, etName, etFatherName, etMotherName, etEmail, etMobileno,etAddress, etCollegeName, etRoomNumber;
+    private EditText etPrn, etName, etFatherName, etMotherName, etEmail, etMobileno, etAddress, etCollegeName, etRoomNumber;
     private Spinner spinnerLivingStatus;
     private Button btnSearch, btnUpdate, btnDelete, btnClear;
 
@@ -161,32 +161,26 @@ public class updateanddelete extends AppCompatActivity {
             livedDetailsRef.child("address").setValue(address);
             livedDetailsRef.child("collegeName").setValue(collegeName);
 
-            // Delete the student from their earlier location in Rooms
-            databaseReference.child("Rooms").addListenerForSingleValueEvent(new ValueEventListener() {
+            // Delete the student from LivingStudent
+            databaseReference.child("LivingStudent").addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     boolean studentFound = false;
 
-                    for (DataSnapshot roomSnapshot : snapshot.getChildren()) {
-                        DataSnapshot studentsSnapshot = roomSnapshot.child("Students");
+                    for (DataSnapshot studentSnapshot : snapshot.getChildren()) {
+                        String studentPrn = studentSnapshot.child("prn").getValue(String.class);
 
-                        for (DataSnapshot studentSnapshot : studentsSnapshot.getChildren()) {
-                            String studentPrn = studentSnapshot.child("prn").getValue(String.class);
-
-                            if (prn.equals(studentPrn)) {
-                                studentFound = true;
-                                studentSnapshot.getRef().removeValue();
-                                break;
-                            }
+                        if (prn.equals(studentPrn)) {
+                            studentFound = true;
+                            studentSnapshot.getRef().removeValue();
+                            break;
                         }
-
-                        if (studentFound) break;
                     }
 
                     if (studentFound) {
-                        Toast.makeText(updateanddelete.this, "Student moved to LivedDetails successfully", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(updateanddelete.this, "Student moved to LivedDetails successfully and removed from LivingStudent", Toast.LENGTH_SHORT).show();
                     } else {
-                        Toast.makeText(updateanddelete.this, "Student not found in earlier location", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(updateanddelete.this, "Student not found in LivingStudent", Toast.LENGTH_SHORT).show();
                     }
                 }
 
