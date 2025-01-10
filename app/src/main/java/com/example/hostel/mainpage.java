@@ -4,7 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -24,7 +24,7 @@ public class mainpage extends AppCompatActivity {
         sharedPreferences = getSharedPreferences("LoginPrefs", MODE_PRIVATE);
 
         // Set click listeners for each button
-        Button manageRoomButton = findViewById(R.id.button8);
+        LinearLayout manageRoomButton = findViewById(R.id.img_room);
         manageRoomButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -34,7 +34,7 @@ public class mainpage extends AppCompatActivity {
             }
         });
 
-        Button newStudentButton = findViewById(R.id.button9);
+        LinearLayout newStudentButton = findViewById(R.id.img_student);
         newStudentButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -44,7 +44,7 @@ public class mainpage extends AppCompatActivity {
             }
         });
 
-        Button updateDeleteStudentButton = findViewById(R.id.button10);
+        LinearLayout updateDeleteStudentButton = findViewById(R.id.img_undesignated_student);
         updateDeleteStudentButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -54,7 +54,7 @@ public class mainpage extends AppCompatActivity {
             }
         });
 
-        Button studentFeesButton = findViewById(R.id.button11);
+        LinearLayout studentFeesButton = findViewById(R.id.img_student_fees);
         studentFeesButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -64,7 +64,7 @@ public class mainpage extends AppCompatActivity {
             }
         });
 
-        Button allStudentLivingButton = findViewById(R.id.button12);
+        LinearLayout allStudentLivingButton = findViewById(R.id.img_living_student);
         allStudentLivingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -74,7 +74,7 @@ public class mainpage extends AppCompatActivity {
             }
         });
 
-        Button leavedStudentsButton = findViewById(R.id.button13);
+        LinearLayout leavedStudentsButton = findViewById(R.id.img_leaved_student);
         leavedStudentsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -84,7 +84,17 @@ public class mainpage extends AppCompatActivity {
             }
         });
 
-        Button logoutButton = findViewById(R.id.button);
+        LinearLayout feedbackButton = findViewById(R.id.img_feedback);
+        feedbackButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Open the Feedback activity
+                Intent intent = new Intent(mainpage.this, feedback.class);
+                startActivity(intent);
+            }
+        });
+
+        LinearLayout logoutButton = findViewById(R.id.img_logout);
         logoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -99,8 +109,8 @@ public class mainpage extends AppCompatActivity {
         editor.clear(); // Clear all stored preferences
         editor.apply();
 
-        // Redirect to MainActivity
-        Intent intent = new Intent(mainpage.this, MainActivity.class); // Replace with your main activity name
+        // Redirect to LoginActivity
+        Intent intent = new Intent(mainpage.this, loginpage.class); // Replace with your login activity name
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK); // Clear activity stack
         startActivity(intent);
 

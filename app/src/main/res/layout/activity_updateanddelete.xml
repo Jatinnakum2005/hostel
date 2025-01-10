@@ -101,7 +101,7 @@
 
     <!-- Mobile  Number -->
     <EditText
-        android:id="@+id/etAadhaar"
+        android:id="@+id/etmobileno"
         android:layout_width="match_parent"
         android:textColor="@color/black"
         android:layout_height="wrap_content"

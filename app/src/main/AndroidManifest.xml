@@ -16,6 +16,9 @@
         android:theme="@style/Theme.Hostel"
         tools:targetApi="31">
         <activity
+            android:name=".feedback"
+            android:exported="false" />
+        <activity
             android:name=".leavedstudent"
             android:exported="false" />
         <activity
@@ -36,7 +39,6 @@
         <activity
             android:name=".ManageRoom"
             android:exported="false" />
-
         <activity
             android:name=".registrationpage"
             android:exported="false" />
@@ -44,7 +46,7 @@
             android:name=".mainpage"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
+            android:name=".loginpage"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

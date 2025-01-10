@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -21,48 +22,49 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
-public class MainActivity extends AppCompatActivity {
+public class loginpage extends AppCompatActivity {
 
-    public TextView registerBtn;
-    public EditText loginUsername, loginPassword;
-    public Button loginBtn;
-    public ProgressBar progressBarLogin;
+    private static final String TAG = "MainActivity";
+
+    private TextView registerBtn;
+    private EditText loginUsername, loginPassword;
+    private Button loginBtn;
+    private ProgressBar progressBarLogin;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Set the correct layout
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.loginpage);
 
         // Initialize UI elements
-        registerBtn = findViewById(R.id.registerbtn);
-        loginUsername = findViewById(R.id.loginusername);
-        loginPassword = findViewById(R.id.loginpass);
-        loginBtn = findViewById(R.id.loginbtn);
+        registerBtn = findViewById(R.id.registerButton);
+        loginUsername = findViewById(R.id.usernameInput);
+        loginPassword = findViewById(R.id.passwordInput);
+        loginBtn = findViewById(R.id.loginButton);
         progressBarLogin = findViewById(R.id.progrssbarlogin);
 
-        // Check if the views are initialized
-        if (registerBtn == null || loginUsername == null || loginPassword == null) {
-            throw new IllegalStateException("One or more views not found in the layout");
+        if (registerBtn == null || loginUsername == null || loginPassword == null || loginBtn == null || progressBarLogin == null) {
+            Log.e(TAG, "One or more views could not be initialized. Check your XML layout.");
+            throw new IllegalStateException("Missing views in layout");
         }
 
-        // Check if the user is already logged in
+        // Check if user is already logged in
         SharedPreferences sharedPreferences = getSharedPreferences("LoginPrefs", MODE_PRIVATE);
         boolean isLoggedIn = sharedPreferences.getBoolean("isLoggedIn", false);
         if (isLoggedIn) {
-            // Skip login screen and go directly to the main page
-            Intent intent = new Intent(MainActivity.this, mainpage.class);
+            Intent intent = new Intent(loginpage.this, mainpage.class);
             startActivity(intent);
             finish();
         }
 
-        // Set click listeners
+        // Register button click
         registerBtn.setOnClickListener(view -> {
-            Intent intent = new Intent(MainActivity.this, registrationpage.class);
+            Intent intent = new Intent(loginpage.this, registrationpage.class);
             startActivity(intent);
         });
 
+        // Login button click
         loginBtn.setOnClickListener(view -> {
             String userUsername = loginUsername.getText().toString().trim();
             String userPassword = loginPassword.getText().toString().trim();
@@ -73,15 +75,18 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    // Validate inputs
     private boolean validateInputs(String username, String password) {
         if (TextUtils.isEmpty(username)) {
             loginUsername.setError("Username is required");
             loginUsername.requestFocus();
             return false;
         }
-
-        if (TextUtils.isEmpty(password) || password.length() < 8) {
+        if (TextUtils.isEmpty(password)) {
+            loginPassword.setError("Password is required");
+            loginPassword.requestFocus();
+            return false;
+        }
+        if (password.length() < 8) {
             loginPassword.setError("Password must be at least 8 characters");
             loginPassword.requestFocus();
             return false;
@@ -89,13 +94,12 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-    // Check User in Firebase
     private void checkUser(String username, String password) {
         progressBarLogin.setVisibility(View.VISIBLE);
         loginBtn.setVisibility(View.INVISIBLE);
 
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users");
-        Query checkUserDatabase = reference.orderByChild("username").equalTo(username); // Ensure field matches Firebase key
+        Query checkUserDatabase = reference.orderByChild("username").equalTo(username);
 
         checkUserDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -108,23 +112,23 @@ public class MainActivity extends AppCompatActivity {
                     String passwordFromDB = userSnapshot.child("password").getValue(String.class);
 
                     if (passwordFromDB != null && passwordFromDB.equals(password)) {
-                        // Save login state
+                        // Save login status
                         SharedPreferences sharedPreferences = getSharedPreferences("LoginPrefs", MODE_PRIVATE);
                         SharedPreferences.Editor editor = sharedPreferences.edit();
                         editor.putBoolean("isLoggedIn", true);
                         editor.putString("username", username);
                         editor.apply();
 
-                        Toast.makeText(MainActivity.this, "Welcome " + username, Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(MainActivity.this, mainpage.class);
+                        Toast.makeText(loginpage.this, "Welcome " + username, Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(loginpage.this, mainpage.class);
                         startActivity(intent);
                         finish();
                     } else {
-                        loginPassword.setError("Invalid Credentials");
+                        loginPassword.setError("Invalid credentials");
                         loginPassword.requestFocus();
                     }
                 } else {
-                    loginUsername.setError("User Does Not Exist");
+                    loginUsername.setError("User does not exist");
                     loginUsername.requestFocus();
                 }
             }
@@ -133,7 +137,8 @@ public class MainActivity extends AppCompatActivity {
             public void onCancelled(@NonNull DatabaseError error) {
                 progressBarLogin.setVisibility(View.GONE);
                 loginBtn.setVisibility(View.VISIBLE);
-                Toast.makeText(MainActivity.this, "Database error: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(loginpage.this, "Database error: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                Log.e(TAG, "Database error: " + error.getMessage());
             }
         });
     }

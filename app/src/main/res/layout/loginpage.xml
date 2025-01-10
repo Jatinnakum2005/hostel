@@ -8,7 +8,7 @@
     android:background="@drawable/bgofapp"
     android:overScrollMode="never"
     android:scrollbars="none"
-    tools:context=".MainActivity">
+    tools:context=".loginpage">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -34,7 +34,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="USERNAME"
-                android:background="@drawable/rounded_box_white">
+                android:background="@drawable/rounded_box2">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/usernameInput"
@@ -42,7 +42,7 @@
                     android:layout_height="wrap_content"
                     android:inputType="text"
                     android:textColor="@android:color/black"
-                    android:hintTextColor="@android:color/darker_gray" />
+                     />
             </com.google.android.material.textfield.TextInputLayout>
         </RelativeLayout>
 
@@ -52,7 +52,7 @@
             android:layout_height="wrap_content"
             android:hint="PASSWORD"
             app:passwordToggleEnabled="true"
-            android:background="@drawable/rounded_box_white"
+            android:background="@drawable/rounded_box2"
             android:layout_marginBottom="20dp">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -61,33 +61,30 @@
                 android:layout_height="wrap_content"
                 android:inputType="textPassword"
                 android:textColor="@android:color/black"
-                android:hintTextColor="@android:color/darker_gray" />
+                />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <FrameLayout
+        <!-- Login Button -->
+        <Button
+            android:id="@+id/loginButton"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="16dp"
+            android:backgroundTint="#007BFF"
+            android:text="LOGIN"
+            android:textColor="@android:color/white"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <!-- Progress Bar -->
+        <ProgressBar
+            android:id="@+id/progrssbarlogin"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-
-            <!-- Login Button -->
-            <Button
-                android:id="@+id/loginButton"
-                android:layout_width="188dp"
-                android:layout_height="50dp"
-                android:layout_marginTop="24dp"
-                android:backgroundTint="#007BFF"
-                android:text="LOGIN"
-                android:textColor="@android:color/white"
-                android:textSize="16sp"
-                android:textStyle="bold" />
-
-            <ProgressBar
-                android:id="@+id/progrssbarlogin"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:paddingTop="15dp"
-                android:visibility="gone" />
-        </FrameLayout>
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:paddingTop="15dp"
+            android:visibility="gone" />
 
         <!-- Register Section -->
         <LinearLayout
@@ -111,7 +108,8 @@
                 android:text="REGISTER"
                 android:textColor="#007BFF"
                 android:textSize="14sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:layout_marginLeft="4dp" /> <!-- Add margin to separate texts -->
         </LinearLayout>
     </LinearLayout>
 </ScrollView>

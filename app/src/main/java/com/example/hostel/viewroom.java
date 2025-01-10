@@ -2,6 +2,10 @@ package com.example.hostel;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -13,19 +17,22 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class viewroom extends AppCompatActivity {
 
-    private TextView tvRoomDetails;
+    private LinearLayout roomsContainer;
     private DatabaseReference databaseReference;
     private String currentUsername;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_viewroom);
+        setContentView(R.layout.activity_viewroom); // Ensure this matches your XML layout filename
 
         // Initialize views
-        tvRoomDetails = findViewById(R.id.tvRoomDetails);
+        roomsContainer = findViewById(R.id.roomsContainer);
 
         // Get the currently logged-in username from SharedPreferences
         SharedPreferences sharedPreferences = getSharedPreferences("LoginPrefs", MODE_PRIVATE);
@@ -52,7 +59,7 @@ public class viewroom extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
-                    StringBuilder roomDetails = new StringBuilder();
+                    roomsContainer.removeAllViews(); // Clear any existing views
 
                     // Loop through all rooms
                     for (DataSnapshot roomSnapshot : dataSnapshot.getChildren()) {
@@ -71,17 +78,46 @@ public class viewroom extends AppCompatActivity {
                         int availableSlots = maxSlots - (int) studentCount;
                         availableSlots = Math.max(availableSlots, 0); // Ensure non-negative
 
-                        // Append room details to the StringBuilder
-                        roomDetails.append(String.format("Room Number: %s\n", roomNumber));
-                        roomDetails.append(String.format("Status: %s\n", roomStatus));
-                        roomDetails.append(String.format("Available Slots: %d/%d\n", availableSlots, maxSlots));
-                        roomDetails.append("-----------------------------\n");
-                    }
+                        // Create a TextView for room details
+                        TextView roomDetailsTextView = new TextView(viewroom.this);
+                        roomDetailsTextView.setText(String.format(
+                                "Room Number: %s\nStatus: %s\nAvailable Slots: %d/%d",
+                                roomNumber, roomStatus, availableSlots, maxSlots
+                        ));
 
-                    // Set the constructed room details to the TextView
-                    tvRoomDetails.setText(roomDetails.toString());
+                        // Create a Spinner (dropdown) for student details
+                        Spinner studentDropdown = new Spinner(viewroom.this);
+                        List<String> studentDetails = new ArrayList<>();
+
+                        // Populate student details
+                        for (DataSnapshot studentSnapshot : studentsSnapshot.getChildren()) {
+                            String studentName = studentSnapshot.child("name").getValue(String.class);
+                            String studentPRN = studentSnapshot.child("prn").getValue(String.class);
+                            if (studentName != null && studentPRN != null) {
+                                studentDetails.add(studentName + " (PRN: " + studentPRN + ")");
+                            }
+                        }
+
+                        if (studentDetails.isEmpty()) {
+                            studentDetails.add("No students in this room");
+                        }
+
+                        ArrayAdapter<String> adapter = new ArrayAdapter<>(viewroom.this, android.R.layout.simple_spinner_item, studentDetails);
+                        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                        studentDropdown.setAdapter(adapter);
+
+                        // Add the room details and dropdown to the layout
+                        LinearLayout roomLayout = new LinearLayout(viewroom.this);
+                        roomLayout.setOrientation(LinearLayout.VERTICAL);
+                        roomLayout.setPadding(16, 16, 16, 16);
+
+                        roomLayout.addView(roomDetailsTextView);
+                        roomLayout.addView(studentDropdown);
+
+                        roomsContainer.addView(roomLayout);
+                    }
                 } else {
-                    tvRoomDetails.setText("No rooms found for the user!");
+                    Toast.makeText(viewroom.this, "No rooms found for the user!", Toast.LENGTH_SHORT).show();
                 }
             }
 

@@ -37,10 +37,10 @@ public class registrationpage extends AppCompatActivity {
         username = findViewById(R.id.usernameInput);
         email = findViewById(R.id.emailInput);
         phone = findViewById(R.id.phoneInput);
-        password = findViewById(R.id.registration_pass);
-        conformpassword = findViewById(R.id.registration_confirm_pass);
+        password = findViewById(R.id.passwordInput);
+        conformpassword = findViewById(R.id.confirmPasswordInput);
         register = findViewById(R.id.submitButton);
-        progrssbarsubmit = findViewById(R.id.progrssbarsubmit);
+        progrssbarsubmit = findViewById(R.id.progressBarSubmit);
 
         register.setOnClickListener(v -> {
             String User_name = username.getText().toString().trim();

@@ -82,7 +82,7 @@ public class newstudent extends AppCompatActivity {
         });
 
         // Handle Save button click
-        btnSave.setOnClickListener(v -> saveStudentData(username));
+        btnSave.setOnClickListener(v -> validateRoomCapacity(username));
 
         // Handle Clear button click
         btnClear.setOnClickListener(v -> clearFields());
@@ -114,13 +114,36 @@ public class newstudent extends AppCompatActivity {
         spinner.setAdapter(adapter);
     }
 
-    // Save student data to Firebase
-    private void saveStudentData(String username) {
+    // Validate room capacity before saving student data
+    private void validateRoomCapacity(String username) {
         if (selectedRoom.isEmpty()) {
             Toast.makeText(this, "Please select a room.", Toast.LENGTH_SHORT).show();
             return;
         }
 
+        // Reference to the selected room's students node
+        DatabaseReference studentsRef = databaseReference.child(selectedRoom).child("Students");
+
+        studentsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                long studentCount = snapshot.getChildrenCount();
+                if (studentCount >= 4) {
+                    Toast.makeText(newstudent.this, "Room is full. Cannot add more than 4 students.", Toast.LENGTH_SHORT).show();
+                } else {
+                    saveStudentData(username); // Proceed to save student data
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(newstudent.this, "Database error: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    // Save student data to Firebase
+    private void saveStudentData(String username) {
         // Get student details from input fields
         String mobile = editText1.getText().toString().trim();
         String name = editText2.getText().toString().trim();
@@ -158,45 +181,12 @@ public class newstudent extends AppCompatActivity {
             return;
         }
 
-        // Check for PRN uniqueness across all users
-        DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("Users");
-        usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                boolean prnExists = false;
-
-                // Iterate through all users and their Students nodes
-                for (DataSnapshot userSnapshot : snapshot.getChildren()) {
-                    for (DataSnapshot roomSnapshot : userSnapshot.child("Rooms").getChildren()) {
-                        for (DataSnapshot studentSnapshot : roomSnapshot.child("Students").getChildren()) {
-                            String existingPrn = studentSnapshot.child("prn").getValue(String.class);
-                            if (prn.equals(existingPrn)) {
-                                prnExists = true;
-                                break;
-                            }
-                        }
-                        if (prnExists) break;
-                    }
-                    if (prnExists) break;
-                }
-
-                if (prnExists) {
-                    editText8.setError("This PRN is already registered");
-                    editText8.requestFocus();
-                } else {
-                    // PRN is unique; save student details
-                    saveStudentToFirebase(mobile, name, fatherName, motherName, email, address, collegeName, prn);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(newstudent.this, "Database error: " + error.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
+        // Save student data to both nodes
+        saveStudentToFirebase(mobile, name, fatherName, motherName, email, address, collegeName, prn);
+        saveStudentToLivingStudent(mobile, name, fatherName, motherName, email, address, collegeName, prn);
     }
 
-    // Save student details to Firebase
+    // Save student to the Rooms node
     private void saveStudentToFirebase(String mobile, String name, String fatherName, String motherName,
                                        String email, String address, String collegeName, String prn) {
         DatabaseReference roomRef = databaseReference.child(selectedRoom).child("Students");
@@ -219,6 +209,41 @@ public class newstudent extends AppCompatActivity {
                     clearFields();
                 })
                 .addOnFailureListener(e -> Toast.makeText(newstudent.this, "Failed to add student: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+    }
+
+    // Save student to the LivingStudent node
+    private void saveStudentToLivingStudent(String mobile, String name, String fatherName, String motherName,
+                                            String email, String address, String collegeName, String prn) {
+        String username = sharedPreferences.getString("username", null); // Get the logged-in user's username
+        if (username == null) {
+            Toast.makeText(this, "User not logged in. Please log in first.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Reference to LivingStudent node
+        DatabaseReference livingStudentRef = FirebaseDatabase.getInstance().getReference("Users")
+                .child(username).child("LivingStudent");
+
+        // Create the student object including the room number
+        Map<String, Object> student = new HashMap<>();
+        student.put("mobile", mobile);
+        student.put("name", name);
+        student.put("fatherName", fatherName);
+        student.put("motherName", motherName);
+        student.put("email", email);
+        student.put("address", address);
+        student.put("collegeName", collegeName);
+        student.put("prn", prn);
+        student.put("room", selectedRoom); // Add the room number to the student details
+
+        // Save student data to the LivingStudent node using PRN as the key
+        livingStudentRef.child(prn).setValue(student)
+                .addOnSuccessListener(aVoid -> {
+                    Toast.makeText(this, "Student added to LivingStudent node with room details!", Toast.LENGTH_SHORT).show();
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(this, "Failed to add student to LivingStudent node: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
     }
 
     // Clear all input fields
