@@ -149,47 +149,72 @@ public class updateanddelete extends AppCompatActivity {
         String mobile = etMobileno.getText().toString().trim();
         String address = etAddress.getText().toString().trim();
         String collegeName = etCollegeName.getText().toString().trim();
+        String roomNumber = etRoomNumber.getText().toString().trim();
         String livingStatus = spinnerLivingStatus.getSelectedItem().toString();
 
         if ("Lived".equals(livingStatus)) {
-            DatabaseReference livedDetailsRef = databaseReference.child("LivedDetails").child(prn);
-            livedDetailsRef.child("name").setValue(name);
-            livedDetailsRef.child("fatherName").setValue(fatherName);
-            livedDetailsRef.child("motherName").setValue(motherName);
-            livedDetailsRef.child("email").setValue(email);
-            livedDetailsRef.child("mobile").setValue(mobile);
-            livedDetailsRef.child("address").setValue(address);
-            livedDetailsRef.child("collegeName").setValue(collegeName);
-
-            // Delete the student from LivingStudent
-            databaseReference.child("LivingStudent").addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    boolean studentFound = false;
-
-                    for (DataSnapshot studentSnapshot : snapshot.getChildren()) {
-                        String studentPrn = studentSnapshot.child("prn").getValue(String.class);
-
-                        if (prn.equals(studentPrn)) {
-                            studentFound = true;
-                            studentSnapshot.getRef().removeValue();
-                            break;
-                        }
-                    }
-
-                    if (studentFound) {
-                        Toast.makeText(updateanddelete.this, "Student moved to LivedDetails successfully and removed from LivingStudent", Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(updateanddelete.this, "Student not found in LivingStudent", Toast.LENGTH_SHORT).show();
-                    }
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-                    Toast.makeText(updateanddelete.this, "Failed to move student to LivedDetails", Toast.LENGTH_SHORT).show();
-                }
-            });
+            moveToLivedDetails(prn, name, fatherName, motherName, email, mobile, address, collegeName, roomNumber);
+            deleteFromLivingStudents(prn);
+            deleteFromRoom(prn, roomNumber);
         }
+    }
+
+    private void moveToLivedDetails(String prn, String name, String fatherName, String motherName, String email, String mobile, String address, String collegeName, String roomNumber) {
+        DatabaseReference livedDetailsRef = databaseReference.child("LivedDetails").child(prn);
+        livedDetailsRef.child("name").setValue(name);
+        livedDetailsRef.child("fatherName").setValue(fatherName);
+        livedDetailsRef.child("motherName").setValue(motherName);
+        livedDetailsRef.child("email").setValue(email);
+        livedDetailsRef.child("mobile").setValue(mobile);
+        livedDetailsRef.child("address").setValue(address);
+        livedDetailsRef.child("collegeName").setValue(collegeName);
+        livedDetailsRef.child("roomNumber").setValue(roomNumber);
+
+        Toast.makeText(updateanddelete.this, "Student moved to LivedDetails", Toast.LENGTH_SHORT).show();
+    }
+
+    private void deleteFromLivingStudents(String prn) {
+        databaseReference.child("LivingStudent").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot studentSnapshot : snapshot.getChildren()) {
+                    String studentPrn = studentSnapshot.child("prn").getValue(String.class);
+
+                    if (prn.equals(studentPrn)) {
+                        studentSnapshot.getRef().removeValue();
+                        Toast.makeText(updateanddelete.this, "Student deleted from LivingStudent node", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(updateanddelete.this, "Failed to delete student from LivingStudent node", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void deleteFromRoom(String prn, String roomNumber) {
+        databaseReference.child("Rooms").child(roomNumber).child("Students").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot studentSnapshot : snapshot.getChildren()) {
+                    String studentPrn = studentSnapshot.child("prn").getValue(String.class);
+
+                    if (prn.equals(studentPrn)) {
+                        studentSnapshot.getRef().removeValue();
+                        Toast.makeText(updateanddelete.this, "Student deleted from Room " + roomNumber, Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(updateanddelete.this, "Failed to delete student from Room", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void deleteStudent() {

@@ -75,6 +75,7 @@ public class leavedstudent extends AppCompatActivity {
                             String fullDetails = "Name: " + details.getName() + "\n" +
                                     "Address: " + details.getAddress() + "\n" +
                                     "College: " + details.getCollegeName() + "\n" +
+                                    "Room: " + details.getRoomNumber() + "\n" +
                                     "Email: " + details.getEmail() + "\n" +
                                     "Father's Name: " + details.getFatherName() + "\n" +
                                     "Mother's Name: " + details.getMotherName() + "\n" +

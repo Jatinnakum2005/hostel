@@ -1,19 +1,93 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".studentfees">
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <!-- EditText for PRN -->
+    <EditText
+        android:id="@+id/editTextPrn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter PRN"
+        android:inputType="number"
+        android:padding="8dp"
+        android:layout_marginBottom="16dp" />
+
+    <!-- Button to search student details -->
+    <Button
+        android:id="@+id/buttonSearch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Search"
+        android:layout_marginBottom="16dp" />
+
+    <Button
+        android:id="@+id/buttonCheckFees"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Check Fees Status"
+        android:layout_marginBottom="16dp" />
+
+    <Button
+        android:id="@+id/buttonClear"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Clear"
+        android:layout_marginBottom="16dp" />
+
 
     <TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
+        android:id="@+id/textViewFeesStatus"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Zingalala hu hu"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+        android:text="Fees Status: "
+        android:textSize="16sp"
+        android:layout_marginBottom="16dp" />
+
+
+    <!-- TextView for displaying student name -->
+    <TextView
+        android:id="@+id/textViewName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Name: "
+        android:textSize="16sp"
+        android:layout_marginBottom="8dp" />
+
+    <!-- TextView for displaying student room -->
+    <TextView
+        android:id="@+id/textViewRoom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Room: "
+        android:textSize="16sp"
+        android:layout_marginBottom="8dp" />
+
+    <!-- TextView for displaying student mobile number -->
+    <TextView
+        android:id="@+id/textViewMobile"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Mobile: "
+        android:textSize="16sp"
+        android:layout_marginBottom="16dp" />
+
+    <!-- Spinner for selecting fees status -->
+    <Spinner
+        android:id="@+id/spinnerFees"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp" />
+
+    <!-- Button to update fees status -->
+    <Button
+        android:id="@+id/buttonUpdateFees"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Update Fees"
+        android:layout_marginBottom="16dp" />
+
+
+</LinearLayout>

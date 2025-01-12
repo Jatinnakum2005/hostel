@@ -6,6 +6,8 @@ public class LivedDetails {
     private String address;
     private String collegeName;
     private String email;
+
+    private String roomNumber;
     private String fatherName;
     private String motherName;
     private String mobile;
@@ -32,6 +34,10 @@ public class LivedDetails {
 
     public String getEmail() {
         return email;
+    }
+
+    public String getRoomNumber() {
+        return roomNumber;
     }
 
     public String getFatherName() {
