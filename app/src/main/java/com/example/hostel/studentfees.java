@@ -35,7 +35,7 @@ public class studentfees extends AppCompatActivity {
         setContentView(R.layout.activity_studentfees);
 
         // Initialize Firebase Database reference
-        databaseReference = FirebaseDatabase.getInstance().getReference("Users");
+        databaseReference = FirebaseDatabase.getInstance().getReference();
 
         // Initialize views
         prnEditText = findViewById(R.id.editTextPrn);
@@ -70,25 +70,33 @@ public class studentfees extends AppCompatActivity {
             return;
         }
 
-        // Navigate the database based on the correct structure
-        DatabaseReference studentRef = databaseReference.child("Jatin").child("LivingStudent").child(prn);
+        DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("Users");
 
-        studentRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.exists()) {
-                    // Retrieve data from the snapshot
-                    String name = snapshot.child("name").getValue(String.class);
-                    String room = snapshot.child("room").getValue(String.class);
-                    String mobile = snapshot.child("mobile").getValue(String.class);
+                boolean studentFound = false;
 
-                    // Handle cases where fields might be null
-                    nameTextView.setText("Name: " + (name != null ? name : "Not available"));
-                    roomTextView.setText("Room: " + (room != null ? room : "Not available"));
-                    mobileTextView.setText("Mobile: " + (mobile != null ? mobile : "Not available"));
+                for (DataSnapshot userSnapshot : snapshot.getChildren()) {
+                    DataSnapshot livingStudentSnapshot = userSnapshot.child("LivingStudent").child(prn);
 
-                    Toast.makeText(studentfees.this, "Student details fetched successfully", Toast.LENGTH_SHORT).show();
-                } else {
+                    if (livingStudentSnapshot.exists()) {
+                        // Retrieve data from the found PRN node
+                        String name = livingStudentSnapshot.child("name").getValue(String.class);
+                        String room = livingStudentSnapshot.child("room").getValue(String.class);
+                        String mobile = livingStudentSnapshot.child("mobile").getValue(String.class);
+
+                        // Populate the TextViews
+                        nameTextView.setText("Name: " + (name != null ? name : "Not available"));
+                        roomTextView.setText("Room: " + (room != null ? room : "Not available"));
+                        mobileTextView.setText("Mobile: " + (mobile != null ? mobile : "Not available"));
+
+                        studentFound = true;
+                        break; // Exit the loop since the student is found
+                    }
+                }
+
+                if (!studentFound) {
                     Toast.makeText(studentfees.this, "No data found for this PRN", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -100,6 +108,7 @@ public class studentfees extends AppCompatActivity {
         });
     }
 
+
     private void saveDataToStudentFeesNode() {
         String prn = prnEditText.getText().toString().trim();
         String selectedFeesOption = feesSpinner.getSelectedItem().toString();
@@ -109,34 +118,68 @@ public class studentfees extends AppCompatActivity {
             return;
         }
 
-        // Prepare data to be stored
-        String name = nameTextView.getText().toString().replace("Name: ", "");
-        String room = roomTextView.getText().toString().replace("Room: ", "");
-        String mobile = mobileTextView.getText().toString().replace("Mobile: ", "");
+        DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("Users");
 
-        if (TextUtils.isEmpty(name) || TextUtils.isEmpty(room) || TextUtils.isEmpty(mobile)) {
-            Toast.makeText(this, "Please fetch student details before updating fees status", Toast.LENGTH_SHORT).show();
-            return;
-        }
+        // Fetch the Hostel Name (parent node) for the PRN
+        usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                boolean prnFound = false;
 
-        // Check or create the StudentFees node under the parent Username
-        DatabaseReference studentFeesRef = databaseReference.child("Jatin").child("StudentFees").child(prn);
+                for (DataSnapshot hostelSnapshot : snapshot.getChildren()) {
+                    DataSnapshot livingStudentSnapshot = hostelSnapshot.child("LivingStudent").child(prn);
 
-        HashMap<String, Object> dataMap = new HashMap<>();
-        dataMap.put("name", name);
-        dataMap.put("room", room);
-        dataMap.put("mobile", mobile);
-        dataMap.put("feesStatus", selectedFeesOption);
+                    if (livingStudentSnapshot.exists()) {
+                        // Retrieve hostel name (parent node key)
+                        String hostelName = hostelSnapshot.getKey();
 
-        // Store data in the node
-        studentFeesRef.updateChildren(dataMap).addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                Toast.makeText(studentfees.this, "Data stored/updated in StudentFees successfully", Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(studentfees.this, "Failed to update StudentFees node", Toast.LENGTH_SHORT).show();
+                        // Retrieve student details
+                        String name = nameTextView.getText().toString().replace("Name: ", "");
+                        String room = roomTextView.getText().toString().replace("Room: ", "");
+                        String mobile = mobileTextView.getText().toString().replace("Mobile: ", "");
+
+                        if (TextUtils.isEmpty(name) || TextUtils.isEmpty(room) || TextUtils.isEmpty(mobile)) {
+                            Toast.makeText(studentfees.this, "Please fetch student details before updating fees status", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+
+                        // Create a reference to the global StudentFees node
+                        DatabaseReference studentFeesRef = databaseReference.child("StudentFees").child(prn);
+
+                        // Prepare data to be stored
+                        HashMap<String, Object> dataMap = new HashMap<>();
+                        dataMap.put("name", name);
+                        dataMap.put("room", room);
+                        dataMap.put("mobile", mobile);
+                        dataMap.put("feesStatus", selectedFeesOption);
+                        dataMap.put("hostel", hostelName); // Add the hostel name here
+
+                        // Store data in the StudentFees node
+                        studentFeesRef.updateChildren(dataMap).addOnCompleteListener(task -> {
+                            if (task.isSuccessful()) {
+                                Toast.makeText(studentfees.this, "Data stored/updated in StudentFees successfully", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(studentfees.this, "Failed to update StudentFees node", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+
+                        prnFound = true;
+                        break; // Exit loop since PRN is found
+                    }
+                }
+
+                if (!prnFound) {
+                    Toast.makeText(studentfees.this, "PRN not found in any hostel", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(studentfees.this, "Error: " + error.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
+
 
     private void fetchFeesStatus() {
         String prn = prnEditText.getText().toString().trim();
@@ -146,16 +189,24 @@ public class studentfees extends AppCompatActivity {
             return;
         }
 
-        // Navigate to the StudentFees node
-        DatabaseReference feesRef = databaseReference.child("Jatin").child("StudentFees").child(prn);
+        // Navigate to the global StudentFees node
+        DatabaseReference feesRef = databaseReference.child("StudentFees").child(prn);
 
         feesRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()) {
                     // Retrieve the feesStatus
+                    String name = snapshot.child("name").getValue(String.class);
+                    String room = snapshot.child("room").getValue(String.class);
+                    String mobile = snapshot.child("mobile").getValue(String.class);
                     String feesStatus = snapshot.child("feesStatus").getValue(String.class);
+
+                    nameTextView.setText("Name: " + (name != null ? name : "Not available"));
+                    roomTextView.setText("Room: " + (room != null ? room : "Not available"));
+                    mobileTextView.setText("Mobile: " + (mobile != null ? mobile : "Not available"));
                     feesStatusTextView.setText("Fees Status: " + (feesStatus != null ? feesStatus : "Not available"));
+
                     Toast.makeText(studentfees.this, "Fees status fetched successfully", Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(studentfees.this, "No fees status found for this PRN", Toast.LENGTH_SHORT).show();
