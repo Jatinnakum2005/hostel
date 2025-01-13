@@ -1,12 +1,21 @@
 package com.example.hostel;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Properties;
 
@@ -21,12 +30,13 @@ import javax.mail.internet.MimeMessage;
 
 public class feedback extends AppCompatActivity {
 
-    private EditText nameEditText, emailEditText, feedbackEditText;
-    private Button submitButton;
-
-    // Admin email credentials
-    private static final String ADMIN_EMAIL = "hostelhome665@gmail.com";  // Replace with admin's email
-    private static final String ADMIN_PASSWORD = "Hostel@1001"; // Replace with admin's app password
+    private EditText feedbackTitleEditText, feedbackMessageEditText;
+    private LinearLayout ratingStarsLayout;
+    private Button submitFeedbackButton;
+    private ProgressBar progressBar;
+    private ImageView[] stars = new ImageView[5];
+    private ImageView backButton;
+    private int selectedRating = 0; // Initial rating value
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,93 +44,148 @@ public class feedback extends AppCompatActivity {
         setContentView(R.layout.activity_feedback);
 
         // Initialize views
-        nameEditText = findViewById(R.id.editTextName);
-        emailEditText = findViewById(R.id.editTextEmail);
-        feedbackEditText = findViewById(R.id.editTextFeedback);
-        submitButton = findViewById(R.id.buttonSubmitFeedback);
+        feedbackTitleEditText = findViewById(R.id.FeedbackTitle);
+        feedbackMessageEditText = findViewById(R.id.FeedbackMessage);
+        submitFeedbackButton = findViewById(R.id.submit_feedback_button);
+        progressBar = findViewById(R.id.progressbarfeedback);
+        ratingStarsLayout = findViewById(R.id.rating_stars_layout);
+        backButton = findViewById(R.id.back_button_feedback);
 
-        // Set click listener for the submit button
-        submitButton.setOnClickListener(v -> submitFeedback());
+        // Initialize star views
+        stars[0] = findViewById(R.id.star_1);
+        stars[1] = findViewById(R.id.star_2);
+        stars[2] = findViewById(R.id.star_3);
+        stars[3] = findViewById(R.id.star_4);
+        stars[4] = findViewById(R.id.star_5);
+
+        // Set click listeners for stars
+        for (int i = 0; i < stars.length; i++) {
+            int index = i;
+            stars[i].setOnClickListener(v -> updateStarRating(index + 1));
+        }
+
+        // Submit feedback button
+        submitFeedbackButton.setOnClickListener(v -> validateAndSubmitFeedback());
+
+        // Back button click listener
+        backButton.setOnClickListener(v -> onBackPressed());
     }
 
-    private void submitFeedback() {
-        String name = nameEditText.getText().toString().trim();
-        String email = emailEditText.getText().toString().trim();
-        String feedback = feedbackEditText.getText().toString().trim();
 
-        if (TextUtils.isEmpty(name)) {
-            Toast.makeText(this, "Please enter your name", Toast.LENGTH_SHORT).show();
-            return;
+    private void updateStarRating(int rating) {
+        selectedRating = rating;
+        for (int i = 0; i < stars.length; i++) {
+            if (i < rating) {
+                stars[i].setImageResource(R.drawable.filled_background); // Replace with your filled star icon
+            } else {
+                stars[i].setImageResource(R.drawable.empty_background); // Replace with your outline star icon
+            }
         }
-        if (TextUtils.isEmpty(email)) {
-            Toast.makeText(this, "Please enter your email", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        if (TextUtils.isEmpty(feedback)) {
-            Toast.makeText(this, "Please provide your feedback", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        // Send feedback email to admin
-        sendFeedbackEmail(name, email, feedback);
-
-        // Clear fields
-        clearFields();
-        Toast.makeText(this, "Thank you for your feedback!", Toast.LENGTH_SHORT).show();
     }
 
-    private void sendFeedbackEmail(String name, String userEmail, String feedback) {
-        // Email content
-        String subject = "New Feedback from " + name;
-        String message = "Name: " + name + "\nEmail: " + userEmail + "\n\nFeedback:\n" + feedback;
+    private void validateAndSubmitFeedback() {
+        String title = feedbackTitleEditText.getText().toString().trim();
+        String message = feedbackMessageEditText.getText().toString().trim();
 
-        // Set up SMTP properties
-        Properties properties = new Properties();
-        properties.put("mail.smtp.auth", "true");                     // Enables SMTP authentication
-        properties.put("mail.smtp.starttls.enable", "true");          // Enables STARTTLS
-        properties.put("mail.smtp.host", "smtp.gmail.com");           // SMTP Host for Gmail
-        properties.put("mail.smtp.port", "587");                      // Port for Gmail SMTP (STARTTLS)
+        if (TextUtils.isEmpty(title)) {
+            feedbackTitleEditText.setError("Title is required");
+            return;
+        }
 
-        // Create a mail session with the SMTP properties
-        Session session = Session.getInstance(properties, new Authenticator() {
+        if (TextUtils.isEmpty(message)) {
+            feedbackMessageEditText.setError("Message is required");
+            return;
+        }
+
+        if (selectedRating == 0) {
+            Toast.makeText(this, "Please provide a rating.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        SharedPreferences sharedPreferences = getSharedPreferences("LoginPrefs", MODE_PRIVATE);
+        String userName = sharedPreferences.getString("username", null);
+
+        if (userName != null) {
+            DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Users").child(userName);
+            databaseReference.child("email").get().addOnCompleteListener(task -> {
+                if (task.isSuccessful() && task.getResult() != null) {
+                    String userEmail = task.getResult().getValue(String.class);
+                    if (userEmail != null) {
+                        // Disable button and show progress bar here
+                        progressBar.setVisibility(View.VISIBLE);
+                        submitFeedbackButton.setVisibility(View.GONE);
+
+                        handleFeedback(userName, userEmail, title, message, selectedRating);
+                    } else {
+                        Toast.makeText(this, "Unable to retrieve user email.", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Toast.makeText(this, "Failed to fetch user email from database.", Toast.LENGTH_SHORT).show();
+                }
+            });
+        } else {
+            Toast.makeText(this, "User not logged in.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void handleFeedback(String userName, String userEmail, String title, String message, int rating) {
+        // Show progress bar and disable button
+        progressBar.setVisibility(View.VISIBLE);
+        submitFeedbackButton.setEnabled(false);
+
+        final String senderEmail = "hostelhome665@gmail.com";
+        final String appPassword = "zcxk ejns mimn wmaj";
+
+        // Feedback email to admin
+        String adminEmailSubject = "New Feedback Received: " + title;
+        String adminEmailBody = "User Name: " + userName +
+                "\nUser Email: " + userEmail +
+                "\n\nFeedback:\n" + message +
+                "\n\nRating: " + rating + " stars";
+
+        // Thank-you email to user
+        String userEmailSubject = "Thank You for Your Feedback!";
+        String userEmailBody = "Dear " + userName + ",\n\nThank you for your valuable feedback.\n\nBest Regards,\nLaundryTo Team";
+
+        // Send emails
+        new Thread(() -> {
+            sendEmail(senderEmail, appPassword, "hostelhome665@gmail.com", adminEmailSubject, adminEmailBody); // To Admin
+            sendEmail(senderEmail, appPassword, userEmail, userEmailSubject, userEmailBody); // To User
+
+            // Hide progress bar and re-enable button after sending emails
+            runOnUiThread(() -> {
+                progressBar.setVisibility(View.GONE);
+                submitFeedbackButton.setVisibility(View.VISIBLE);
+                Toast.makeText(this, "Feedback sent successfully!", Toast.LENGTH_SHORT).show();
+                finish(); // Close the feedback activity
+            });
+        }).start();
+    }
+
+    private void sendEmail(String senderEmail, String appPassword, String recipientEmail, String subject, String body) {
+        Properties props = new Properties();
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.starttls.enable", "true");
+        props.put("mail.smtp.host", "smtp.gmail.com");
+        props.put("mail.smtp.port", "587");
+
+        Session session = Session.getInstance(props, new Authenticator() {
             @Override
             protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication(ADMIN_EMAIL, ADMIN_PASSWORD);
+                return new PasswordAuthentication(senderEmail, appPassword);
             }
         });
 
         try {
-            // Create email message
-            Message emailMessage = new MimeMessage(session);
-            emailMessage.setFrom(new InternetAddress(ADMIN_EMAIL));       // Sender email
-            emailMessage.setRecipients(Message.RecipientType.TO,          // Recipient(s)
-                    InternetAddress.parse(ADMIN_EMAIL));                  // Admin email
-            emailMessage.setSubject(subject);                             // Email subject
-            emailMessage.setText(message);                                // Email body
+            Message message = new MimeMessage(session);
+            message.setFrom(new InternetAddress(senderEmail));
+            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(recipientEmail));
+            message.setSubject(subject);
+            message.setText(body);
 
-            // Send the email on a background thread
-            new Thread(() -> {
-                try {
-                    Transport.send(emailMessage);
-                    // Notify user on successful email submission
-                    runOnUiThread(() -> Toast.makeText(this, "Feedback sent successfully!", Toast.LENGTH_SHORT).show());
-                } catch (MessagingException e) {
-                    e.printStackTrace();
-                    // Notify user on email send failure
-                    runOnUiThread(() -> Toast.makeText(this, "Failed to send feedback. Please try again.", Toast.LENGTH_SHORT).show());
-                }
-            }).start();
-
+            Transport.send(message);
         } catch (MessagingException e) {
             e.printStackTrace();
-            Toast.makeText(this, "Failed to prepare email. Please try again.", Toast.LENGTH_SHORT).show();
         }
-    }
-
-
-    private void clearFields() {
-        nameEditText.setText("");
-        emailEditText.setText("");
-        feedbackEditText.setText("");
     }
 }
