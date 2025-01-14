@@ -226,7 +226,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Phone 1: +919724510243"
+                    android:text="Phone 1: +919898471014"
                     android:textSize="16sp"
                     android:textColor="#000000"
                     android:layout_marginTop="8dp" />
@@ -234,7 +234,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Phone 2: +916353060836"
+                    android:text="Phone 2: +919824891733"
                     android:textSize="16sp"
                     android:textColor="#000000"
                     android:layout_marginTop="4dp" />
@@ -242,7 +242,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Phone 3: +919316569143"
+                    android:text="Phone 3: +919624473261"
                     android:textSize="16sp"
                     android:textColor="#000000"
                     android:layout_marginTop="4dp" />
@@ -251,7 +251,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Email: laundaryto.team@gmail.com"
+                    android:text="Email:hostelhome665@gmail.com"
                     android:textSize="16sp"
                     android:textColor="#000000"
                     android:layout_marginTop="8dp" />

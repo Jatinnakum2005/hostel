@@ -1,90 +1,110 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bgofapp"
+    android:background="@drawable/bg2"
     android:overScrollMode="never"
-    android:scrollbars="none"
-    tools:context=".loginpage">
+    android:scrollbars="none">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:padding="20dp">
 
-        <!-- Logo -->
-        <ImageView
-            android:layout_width="300dp"
-            android:layout_height="150dp"
-            android:layout_marginBottom="32dp"
-            android:src="@drawable/logo" />
-
-        <!-- Username Field -->
-        <RelativeLayout
+        <!-- Logo Section -->
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp">
+            android:layout_marginBottom="24dp"
+            android:background="@android:color/white"
+            android:padding="16dp"
+            android:gravity="center">
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="USERNAME"
-                android:background="@drawable/rounded_box2">
+            <ImageView
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:src="@drawable/logo"
+                android:contentDescription="App Logo" />
+        </LinearLayout>
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/usernameInput"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="text"
-                    android:textColor="@android:color/black"
-                     />
-            </com.google.android.material.textfield.TextInputLayout>
-        </RelativeLayout>
+        <!-- Page Title -->
 
-        <!-- Password Field -->
+        <!-- Username Field -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Username"
+            android:textColor="@android:color/black"
+            android:layout_marginBottom="6dp"
+            android:textStyle="bold" />
+
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="PASSWORD"
-            app:passwordToggleEnabled="true"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/rounded_box2">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/usernameInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Enter Username"
+                android:textColor="@android:color/black"
+                android:textColorHint="@android:color/darker_gray"
+                android:background="@android:color/transparent" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Password Field -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Password"
+            android:textColor="@android:color/black"
+            android:layout_marginBottom="6dp"
+            android:textStyle="bold" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
             android:background="@drawable/rounded_box2"
-            android:layout_marginBottom="20dp">
+            app:passwordToggleEnabled="true">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/passwordInput"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textPassword"
+                android:hint="Enter Password"
                 android:textColor="@android:color/black"
-                />
+                android:textColorHint="@android:color/darker_gray"
+                android:background="@android:color/transparent" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Login Button -->
-        <Button
-            android:id="@+id/loginButton"
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginTop="24dp"
-            android:layout_marginBottom="16dp"
-            android:backgroundTint="#007BFF"
-            android:text="LOGIN"
-            android:textColor="@android:color/white"
-            android:textSize="16sp"
-            android:textStyle="bold" />
-
-        <!-- Progress Bar -->
-        <ProgressBar
-            android:id="@+id/progrssbarlogin"
-            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:paddingTop="15dp"
-            android:visibility="gone" />
+            android:layout_marginBottom="24dp">
+
+            <Button
+                android:id="@+id/loginButton"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:backgroundTint="#007bff"
+                android:text="Login"
+                android:textColor="@android:color/white"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <ProgressBar
+                android:id="@+id/progrssbarlogin"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_gravity="center"
+                android:visibility="gone" />
+        </FrameLayout>
 
         <!-- Register Section -->
         <LinearLayout
@@ -97,7 +117,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="NOT A MEMBER? "
+                android:text="Not a Member? "
                 android:textColor="@android:color/black"
                 android:textSize="14sp" />
 
@@ -105,11 +125,11 @@
                 android:id="@+id/registerButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="REGISTER"
-                android:textColor="#007BFF"
+                android:text="Register"
+                android:textColor="#007bff"
                 android:textSize="14sp"
                 android:textStyle="bold"
-                android:layout_marginLeft="4dp" /> <!-- Add margin to separate texts -->
+                android:layout_marginLeft="4dp" />
         </LinearLayout>
     </LinearLayout>
 </ScrollView>

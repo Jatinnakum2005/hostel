@@ -1,161 +1,315 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp"
-    android:background="@color/white">
+    android:background="@color/white"
+    android:overScrollMode="never"
+    android:scrollbars="none">
 
-    <!-- Mobile Number with Search -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginBottom="8dp">
+        android:background="@drawable/bg2"
+        android:orientation="vertical"
+        android:padding="20dp">
 
-        <EditText
-            android:id="@+id/etprn"
-            android:layout_width="0dp"
-            android:textColor="@color/black"
-            android:textColorHint="@color/black"
+        <!-- PRN -->
+        <TextView
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:hint="PRN"
-            android:inputType="number" />
+            android:text="PRN"
+            android:textColor="@color/black"
+            android:layout_marginBottom="6dp" />
 
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/rounded_box2">
 
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etprn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Enter your 10 or 16-digit PRN number"
+                android:textColor="@color/black"
+                android:textColorHint="@android:color/darker_gray"
+                android:background="@android:color/transparent"
+                android:inputType="number" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Search Button -->
         <Button
             android:id="@+id/btnSearch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Search"
-            android:layout_marginStart="8dp" />
+            android:textColor="@android:color/white"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="20dp"
+            android:layout_gravity="center"
+            android:backgroundTint="#6A0DAD"/>
+
+        <!-- Name -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Name"
+            android:textColor="@color/black"
+            android:layout_marginBottom="6dp" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/rounded_box2">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Enter your full name"
+                android:textColor="@color/black"
+                android:textColorHint="@android:color/darker_gray"
+                android:background="@android:color/transparent"
+                android:inputType="text" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Father Name -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Father Name"
+            android:textColor="@color/black"
+            android:layout_marginBottom="6dp" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/rounded_box2">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etFatherName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Enter your father or guardian name"
+                android:textColor="@color/black"
+                android:textColorHint="@android:color/darker_gray"
+                android:background="@android:color/transparent"
+                android:inputType="text" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Mother Name -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Mother Name"
+            android:textColor="@color/black"
+            android:layout_marginBottom="6dp" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/rounded_box2">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etMotherName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Enter your mother name"
+                android:textColor="@color/black"
+                android:textColorHint="@android:color/darker_gray"
+                android:background="@android:color/transparent"
+                android:inputType="text" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Email -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="E-mail"
+            android:textColor="@color/black"
+            android:layout_marginBottom="6dp" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/rounded_box2">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etEmail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Enter your E-mail address"
+                android:textColor="@color/black"
+                android:textColorHint="@android:color/darker_gray"
+                android:background="@android:color/transparent"
+                android:inputType="textEmailAddress" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Mobile Number -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Mobile Number"
+            android:textColor="@color/black"
+            android:layout_marginBottom="6dp" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/rounded_box2">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etmobileno"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Enter your mobile number"
+                android:textColor="@color/black"
+                android:textColorHint="@android:color/darker_gray"
+                android:background="@android:color/transparent"
+                android:inputType="phone" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Permanent Address -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Permanent Address"
+            android:textColor="@color/black"
+            android:layout_marginBottom="6dp" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/rounded_box2">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etAddress"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Enter your permanent address"
+                android:textColor="@color/black"
+                android:textColorHint="@android:color/darker_gray"
+                android:background="@android:color/transparent"
+                android:inputType="textMultiLine" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- College Name -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="College Name"
+            android:textColor="@color/black"
+            android:layout_marginBottom="6dp" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/rounded_box2">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etCollegeName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Enter your college name"
+                android:textColor="@color/black"
+                android:textColorHint="@android:color/darker_gray"
+                android:background="@android:color/transparent"
+                android:inputType="text" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Room Number -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Room Number"
+            android:textColor="@color/black"
+            android:layout_marginBottom="6dp" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/rounded_box2">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etRoomNumber"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Enter your room number"
+                android:textColor="@color/black"
+                android:textColorHint="@android:color/darker_gray"
+                android:background="@android:color/transparent"
+                android:inputType="number" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Living Status (Spinner) -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Living Status"
+            android:textColor="@color/black"
+            android:layout_marginBottom="6dp" />
+
+        <Spinner
+            android:id="@+id/spinnerLivingStatus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp" />
+
+        <!-- Buttons -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:layout_marginTop="24dp">
+
+            <!-- Search Button -->
+
+            <!-- Update Button -->
+            <Button
+                android:id="@+id/btnUpdate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Update"
+                android:backgroundTint="#6A0DAD"
+                android:textColor="@android:color/white"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:layout_marginEnd="8dp" />
+
+            <!-- Delete Button -->
+            <Button
+                android:id="@+id/btnDelete"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Delete"
+                android:backgroundTint="#6A0DAD"
+                android:textColor="@android:color/white"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:layout_marginEnd="8dp" />
+
+            <!-- Clear Button -->
+            <Button
+                android:id="@+id/btnClear"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Clear"
+                android:backgroundTint="#6A0DAD"
+                android:textColor="@android:color/white"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+        </LinearLayout>
     </LinearLayout>
-
-    <!-- Name -->
-    <EditText
-        android:id="@+id/etName"
-        android:textColor="@color/black"
-        android:textColorHint="@color/black"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Name"
-        android:inputType="text"
-        android:layout_marginBottom="8dp" />
-
-    <!-- Father Name -->
-    <EditText
-        android:id="@+id/etFatherName"
-        android:layout_width="match_parent"
-        android:textColor="@color/black"
-        android:textColorHint="@color/black"
-        android:layout_height="wrap_content"
-        android:hint="Father Name"
-        android:inputType="text"
-        android:layout_marginBottom="8dp" />
-
-    <!-- Mother Name -->
-    <EditText
-        android:id="@+id/etMotherName"
-        android:textColor="@color/black"
-        android:textColorHint="@color/black"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Mother Name"
-        android:inputType="text"
-        android:layout_marginBottom="8dp" />
-
-    <!-- Email -->
-    <EditText
-        android:id="@+id/etEmail"
-        android:layout_width="match_parent"
-        android:textColor="@color/black"
-        android:textColorHint="@color/black"
-        android:layout_height="wrap_content"
-        android:hint="Email"
-        android:inputType="textEmailAddress"
-        android:layout_marginBottom="8dp" />
-
-    <!-- Permanent Address -->
-    <EditText
-        android:id="@+id/etAddress"
-        android:layout_width="match_parent"
-        android:textColor="@color/black"
-        android:textColorHint="@color/black"
-        android:layout_height="wrap_content"
-        android:hint="Permanent Address"
-        android:inputType="textMultiLine"
-        android:layout_marginBottom="8dp" />
-
-    <!-- College Name -->
-    <EditText
-        android:id="@+id/etCollegeName"
-        android:textColor="@color/black"
-        android:textColorHint="@color/black"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="College Name"
-        android:inputType="text"
-        android:layout_marginBottom="8dp" />
-
-    <!-- Mobile  Number -->
-    <EditText
-        android:id="@+id/etmobileno"
-        android:layout_width="match_parent"
-        android:textColor="@color/black"
-        android:layout_height="wrap_content"
-        android:hint="Mobile Number"
-        android:textColorHint="@color/black"
-        android:inputType="number"
-        android:layout_marginBottom="8dp" />
-
-    <!-- Room Number -->
-    <EditText
-        android:id="@+id/etRoomNumber"
-        android:textColor="@color/black"
-        android:textColorHint="@color/black"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Room Number"
-        android:inputType="number"
-        android:layout_marginBottom="8dp" />
-
-    <!-- Living Status (Spinner) -->
-    <Spinner
-        android:id="@+id/spinnerLivingStatus"
-        android:outlineSpotShadowColor="@color/black"
-        android:textColor="@color/black"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp" />
-
-    <!-- Buttons -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center"
-        android:layout_marginTop="16dp">
-
-        <Button
-            android:id="@+id/btnUpdate"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Update"
-            android:layout_marginEnd="8dp" />
-
-        <Button
-            android:id="@+id/btnDelete"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Delete"
-            android:layout_marginEnd="8dp" />
-
-        <Button
-            android:id="@+id/btnClear"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Clear" />
-    </LinearLayout>
-</LinearLayout>
+</ScrollView>

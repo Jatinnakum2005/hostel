@@ -49,11 +49,15 @@ public class studentfees extends AppCompatActivity {
         feesStatusTextView = findViewById(R.id.textViewFeesStatus);
         feesSpinner = findViewById(R.id.spinnerFees);
 
-        // Set up Spinner with options
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
-                R.array.fees_options, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        feesSpinner.setAdapter(adapter);
+        // Set up Spinner with custom item layout
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(
+                this,
+                R.layout.spinner_item,  // Use the custom layout for spinner items
+                getResources().getStringArray(R.array.fees_options) // Array from resources
+        );
+
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item); // Set the dropdown view
+        feesSpinner.setAdapter(adapter); // Set the adapter to the spinner
 
         // Set click listeners
         searchButton.setOnClickListener(v -> fetchStudentDetails());
@@ -107,7 +111,6 @@ public class studentfees extends AppCompatActivity {
             }
         });
     }
-
 
     private void saveDataToStudentFeesNode() {
         String prn = prnEditText.getText().toString().trim();
@@ -179,7 +182,6 @@ public class studentfees extends AppCompatActivity {
             }
         });
     }
-
 
     private void fetchFeesStatus() {
         String prn = prnEditText.getText().toString().trim();

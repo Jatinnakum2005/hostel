@@ -41,7 +41,7 @@ public class ManageRoom extends AppCompatActivity {
         etRoomNumber = findViewById(R.id.etRoomNumber);
         etSearchRoom = findViewById(R.id.etSearchRoom);
         tvRoomDetails = findViewById(R.id.tvRoomDetails);
-        cbact = findViewById(R.id.cbact);
+        cbact = findViewById(R.id.cbActivate);
         btnSave = findViewById(R.id.btnSave);
         btnSearch = findViewById(R.id.btnSearch);
         btnDelete = findViewById(R.id.btnDelete);

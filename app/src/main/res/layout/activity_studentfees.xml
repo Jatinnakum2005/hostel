@@ -1,93 +1,144 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp">
+    android:background="@drawable/bg2"
+    android:overScrollMode="never"
+    android:scrollbars="none">
 
-    <!-- EditText for PRN -->
-    <EditText
-        android:id="@+id/editTextPrn"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Enter PRN"
-        android:inputType="number"
-        android:padding="8dp"
-        android:layout_marginBottom="16dp" />
+        android:orientation="vertical"
+        android:padding="20dp">
 
-    <!-- Button to search student details -->
-    <Button
-        android:id="@+id/buttonSearch"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Search"
-        android:layout_marginBottom="16dp" />
+        <!-- PRN -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="PRN"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:layout_marginBottom="6dp" />
 
-    <Button
-        android:id="@+id/buttonCheckFees"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Check Fees Status"
-        android:layout_marginBottom="16dp" />
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/rounded_box2">
 
-    <Button
-        android:id="@+id/buttonClear"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Clear"
-        android:layout_marginBottom="16dp" />
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editTextPrn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Enter PRN"
+                android:textColor="@color/black"
+                android:textColorHint="@android:color/darker_gray"
+                android:background="@android:color/transparent"
+                android:inputType="number" />
+        </com.google.android.material.textfield.TextInputLayout>
 
+        <!-- Search Button -->
+        <Button
+            android:id="@+id/buttonSearch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Search"
+            android:textColor="@android:color/white"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="16dp"
+            android:backgroundTint="#6A0DAD"/>
 
-    <TextView
-        android:id="@+id/textViewFeesStatus"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Fees Status: "
-        android:textSize="16sp"
-        android:layout_marginBottom="16dp" />
+        <!-- Button to check fees status -->
+        <Button
+            android:id="@+id/buttonCheckFees"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Check Fees Status"
+            android:textColor="@android:color/white"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="16dp"
+            android:backgroundTint="#6A0DAD"/>
 
+        <!-- Clear Button -->
+        <Button
+            android:id="@+id/buttonClear"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Clear"
+            android:textColor="@android:color/white"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="16dp"
+            android:backgroundTint="#6A0DAD"/>
 
-    <!-- TextView for displaying student name -->
-    <TextView
-        android:id="@+id/textViewName"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Name: "
-        android:textSize="16sp"
-        android:layout_marginBottom="8dp" />
+        <!-- TextView for displaying fees status -->
+        <TextView
+            android:id="@+id/textViewFeesStatus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Fees Status: "
+            android:textSize="16sp"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:layout_marginBottom="16dp" />
 
-    <!-- TextView for displaying student room -->
-    <TextView
-        android:id="@+id/textViewRoom"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Room: "
-        android:textSize="16sp"
-        android:layout_marginBottom="8dp" />
+        <!-- TextView for displaying student name -->
+        <TextView
+            android:id="@+id/textViewName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Name: "
+            android:textSize="16sp"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:layout_marginBottom="8dp" />
 
-    <!-- TextView for displaying student mobile number -->
-    <TextView
-        android:id="@+id/textViewMobile"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Mobile: "
-        android:textSize="16sp"
-        android:layout_marginBottom="16dp" />
+        <!-- TextView for displaying student room -->
+        <TextView
+            android:id="@+id/textViewRoom"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Room: "
+            android:textSize="16sp"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:layout_marginBottom="8dp" />
 
-    <!-- Spinner for selecting fees status -->
-    <Spinner
-        android:id="@+id/spinnerFees"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp" />
+        <!-- TextView for displaying student mobile number -->
+        <TextView
+            android:id="@+id/textViewMobile"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Mobile: "
+            android:textSize="16sp"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:layout_marginBottom="16dp" />
 
-    <!-- Button to update fees status -->
-    <Button
-        android:id="@+id/buttonUpdateFees"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Update Fees"
-        android:layout_marginBottom="16dp" />
+        <!-- Spinner for selecting fees status -->
+        <Spinner
+            android:id="@+id/spinnerFees"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:popupBackground="@android:color/white"
+            android:spinnerMode="dropdown"
+            android:entries="@array/fees_options" />
 
-
-</LinearLayout>
+        <!-- Update Fees Button -->
+        <Button
+            android:id="@+id/buttonUpdateFees"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Update Fees"
+            android:textColor="@android:color/white"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="16dp"
+            android:backgroundTint="#6A0DAD"/>
+    </LinearLayout>
+</ScrollView>
