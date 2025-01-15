@@ -78,7 +78,7 @@ public class feedback extends AppCompatActivity {
             if (i < rating) {
                 stars[i].setImageResource(R.drawable.filled_background); // Replace with your filled star icon
             } else {
-                stars[i].setImageResource(R.drawable.empty_background); // Replace with your outline star icon
+                stars[i].setImageResource(R.drawable.empty_backgroundd); // Replace with your outline star icon
             }
         }
     }

@@ -139,7 +139,7 @@
                         android:layout_height="26dp"
                         android:contentDescription="Star 1"
                         android:padding="8dp"
-                        android:src="@drawable/empty_background" />
+                        android:src="@drawable/empty_backgroundd" />
 
                     <ImageView
                         android:id="@+id/star_2"
@@ -147,7 +147,7 @@
                         android:layout_height="match_parent"
                         android:contentDescription="Star 2"
                         android:padding="8dp"
-                        android:src="@drawable/empty_background" />
+                        android:src="@drawable/empty_backgroundd" />
 
                     <ImageView
                         android:id="@+id/star_3"
@@ -155,7 +155,7 @@
                         android:layout_height="53dp"
                         android:contentDescription="Star 3"
                         android:padding="8dp"
-                        android:src="@drawable/empty_background" />
+                        android:src="@drawable/empty_backgroundd" />
 
                     <ImageView
                         android:id="@+id/star_4"
@@ -163,7 +163,7 @@
                         android:layout_height="match_parent"
                         android:contentDescription="Star 4"
                         android:padding="8dp"
-                        android:src="@drawable/empty_background" />
+                        android:src="@drawable/empty_backgroundd" />
 
                     <ImageView
                         android:id="@+id/star_5"
@@ -171,7 +171,7 @@
                         android:layout_height="43dp"
                         android:contentDescription="Star 5"
                         android:padding="8dp"
-                        android:src="@drawable/empty_background" />
+                        android:src="@drawable/empty_backgroundd" />
                 </LinearLayout>
             </LinearLayout>
 
