@@ -10,15 +10,16 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/bgofapp"
+        android:background="@drawable/bg2"
         android:orientation="vertical"
         android:padding="20dp">
 
         <!-- Logo -->
         <ImageView
             android:id="@+id/logoImage"
-            android:layout_width="135dp"
-            android:layout_height="130dp"
+            android:layout_width="150dp"
+            android:background="@drawable/rounded_box"
+            android:layout_height="150dp"
             android:layout_gravity="center"
             android:layout_marginTop="16dp"
             android:src="@drawable/logo" />
@@ -169,7 +170,7 @@
                 android:id="@+id/submitButton"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:backgroundTint="#007BFF"
+                android:backgroundTint="#6A0DAD"
                 android:text="Submit"
                 android:textColor="@android:color/white"
                 android:textSize="16sp"

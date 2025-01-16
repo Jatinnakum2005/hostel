@@ -2,7 +2,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@drawable/bg2"
     android:padding="16dp">
 
     <!-- Header -->
@@ -23,14 +23,14 @@
         android:layout_height="match_parent"
         android:layout_below="@id/title">
 
-        <!-- Container for dynamically added student details -->
-        <LinearLayout
+        <!-- TableLayout for dynamically added student details -->
+        <TableLayout
             android:id="@+id/student_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
+            android:stretchColumns="*"
             android:padding="10dp"
-            android:background="@color/white" />
+            android:background="@drawable/rounded_box" />
 
     </ScrollView>
 

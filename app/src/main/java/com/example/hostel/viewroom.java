@@ -2,7 +2,6 @@ package com.example.hostel;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.Spinner;

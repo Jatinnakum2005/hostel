@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/black">
+    android:background="@drawable/bg2">
 
     <!-- ScrollView for All Containers -->
     <ScrollView
@@ -21,15 +21,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:background="@color/white"
                 android:elevation="8dp"
                 android:gravity="center_vertical">
 
                 <!-- Back Button -->
                 <ImageView
                     android:id="@+id/back_button_feedback"
-                    android:layout_width="34dp"
-                    android:layout_height="64dp"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
                     android:layout_marginTop="5dp"
                     android:contentDescription="Back Button"
                     android:padding="8dp"
@@ -45,7 +44,7 @@
                     android:layout_marginTop="5dp"
                     android:textStyle="bold"
                     android:textColor="#000000"
-                    android:layout_marginStart="16dp" />
+                    android:layout_marginStart="10dp" />
             </LinearLayout>
 
             <!-- Container 2: Feedback Form -->
@@ -53,7 +52,6 @@
                 android:id="@+id/feedback_form_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/white"
                 android:orientation="vertical"
                 android:padding="16dp"
                 android:elevation="8dp"
@@ -83,7 +81,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Enter Your Title"
-                    android:background="@drawable/background"
+                    android:background="@drawable/rounded_box"
                     android:padding="10dp"
                     android:layout_marginTop="8dp"
                     android:textColorHint="@color/black"
@@ -135,8 +133,8 @@
                     <!-- Star Ratings -->
                     <ImageView
                         android:id="@+id/star_1"
-                        android:layout_width="32dp"
-                        android:layout_height="26dp"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
                         android:contentDescription="Star 1"
                         android:padding="8dp"
                         android:src="@drawable/empty_backgroundd" />
@@ -144,31 +142,31 @@
                     <ImageView
                         android:id="@+id/star_2"
                         android:layout_width="40dp"
-                        android:layout_height="match_parent"
+                        android:layout_height="40dp"
                         android:contentDescription="Star 2"
                         android:padding="8dp"
                         android:src="@drawable/empty_backgroundd" />
 
                     <ImageView
                         android:id="@+id/star_3"
-                        android:layout_width="30dp"
-                        android:layout_height="53dp"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
                         android:contentDescription="Star 3"
                         android:padding="8dp"
                         android:src="@drawable/empty_backgroundd" />
 
                     <ImageView
                         android:id="@+id/star_4"
-                        android:layout_width="27dp"
-                        android:layout_height="match_parent"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
                         android:contentDescription="Star 4"
                         android:padding="8dp"
                         android:src="@drawable/empty_backgroundd" />
 
                     <ImageView
                         android:id="@+id/star_5"
-                        android:layout_width="31dp"
-                        android:layout_height="43dp"
+                        android:layout_width="40dp"
+                        android:layout_height="match_parent"
                         android:contentDescription="Star 5"
                         android:padding="8dp"
                         android:src="@drawable/empty_backgroundd" />
@@ -187,7 +185,7 @@
                     android:layout_height="wrap_content"
                     android:text="Submit"
                     android:textSize="20dp"
-                    android:backgroundTint="#2196F3"
+                    android:backgroundTint="#6A0DAD"
                     android:textColor="#FFFFFF"
                     android:padding="12dp" />
 
@@ -207,7 +205,7 @@
                 android:id="@+id/contact_support_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/white"
+                android:background="@drawable/rounded_box"
                 android:orientation="vertical"
                 android:padding="16dp"
                 android:elevation="8dp"

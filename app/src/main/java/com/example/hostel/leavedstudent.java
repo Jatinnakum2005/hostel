@@ -1,6 +1,7 @@
 package com.example.hostel;
 
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -66,8 +67,10 @@ public class leavedstudent extends AppCompatActivity {
 
                             // Create summary view (PRN, Name, and Mobile)
                             TextView summaryView = new TextView(leavedstudent.this);
-                            summaryView.setText("PRN: " + prn + " | Name: " + details.getName());
+                            summaryView.setText("PRN: " + prn + "\n" + "Name: " + details.getName());
                             summaryView.setTextSize(16);
+                            summaryView.setTextColor(Color.BLACK);
+
                             summaryView.setPadding(10, 10, 10, 10);
 
                             // Create detailed view
@@ -82,6 +85,7 @@ public class leavedstudent extends AppCompatActivity {
                                     "Mobile: " + details.getMobile();
                             fullDetailsView.setText(fullDetails);
                             fullDetailsView.setTextSize(14);
+                            fullDetailsView.setTextColor(Color.BLUE);
                             fullDetailsView.setPadding(10, 10, 10, 20);
                             fullDetailsView.setVisibility(View.GONE); // Hide by default
 
