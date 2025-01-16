@@ -1,9 +1,13 @@
 package com.example.hostel;
 
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -83,6 +87,8 @@ public class viewroom extends AppCompatActivity {
                                 "Room Number: %s\nStatus: %s\nAvailable Slots: %d/%d",
                                 roomNumber, roomStatus, availableSlots, maxSlots
                         ));
+                        roomDetailsTextView.setTextColor(Color.BLACK);
+                        roomDetailsTextView.setTypeface(null, Typeface.BOLD);
 
                         // Create a Spinner (dropdown) for student details
                         Spinner studentDropdown = new Spinner(viewroom.this);
@@ -101,7 +107,23 @@ public class viewroom extends AppCompatActivity {
                             studentDetails.add("No students in this room");
                         }
 
-                        ArrayAdapter<String> adapter = new ArrayAdapter<>(viewroom.this, android.R.layout.simple_spinner_item, studentDetails);
+                        ArrayAdapter<String> adapter = new ArrayAdapter<String>(viewroom.this, android.R.layout.simple_spinner_item, studentDetails) {
+                            @Override
+                            public View getView(int position, View convertView, ViewGroup parent) {
+                                TextView textView = (TextView) super.getView(position, convertView, parent);
+                                textView.setTextColor(Color.BLACK); // Normal black color for students
+                                textView.setTypeface(null, Typeface.NORMAL);
+                                return textView;
+                            }
+
+                            @Override
+                            public View getDropDownView(int position, View convertView, ViewGroup parent) {
+                                TextView textView = (TextView) super.getDropDownView(position, convertView, parent);
+                                textView.setTextColor(Color.BLACK); // Normal black color for students
+                                textView.setTypeface(null, Typeface.NORMAL);
+                                return textView;
+                            }
+                        };
                         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                         studentDropdown.setAdapter(adapter);
 
