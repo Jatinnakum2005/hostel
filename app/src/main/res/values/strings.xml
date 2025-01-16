@@ -3,6 +3,7 @@
     <string name="app_name">hostel</string>
 
     <string-array name="fees_options">
+
         <item>Half Fees Paid</item>
         <item>Full Fees Paid</item>
 

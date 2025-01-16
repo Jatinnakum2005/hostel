@@ -54,7 +54,7 @@ public class updateanddelete extends AppCompatActivity {
         btnClear = findViewById(R.id.btnClear);
 
         // Set Spinner options
-        ArrayAdapter<String> livingStatusAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, new String[]{"Living", "Lived"});
+        ArrayAdapter<String> livingStatusAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, new String[]{"Living", "Leaved"});
         livingStatusAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerLivingStatus.setAdapter(livingStatusAdapter);
 

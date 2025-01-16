@@ -20,6 +20,7 @@
             android:layout_height="wrap_content"
             android:text="PRN"
             android:textColor="@color/black"
+            android:textStyle="bold"
             android:layout_marginBottom="6dp" />
 
         <com.google.android.material.textfield.TextInputLayout
@@ -264,6 +265,8 @@
             android:id="@+id/spinnerLivingStatus"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@drawable/rounded_box"
+
             android:layout_marginBottom="20dp" />
 
         <!-- Buttons -->
