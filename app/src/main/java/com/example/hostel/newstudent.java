@@ -205,7 +205,7 @@ public class newstudent extends AppCompatActivity {
         // Save student data to Firebase using PRN as the key
         roomRef.child(prn).setValue(student)
                 .addOnSuccessListener(aVoid -> {
-                    Toast.makeText(newstudent.this, "Student added successfully!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(newstudent.this, "Done", Toast.LENGTH_SHORT).show();
                     clearFields();
                 })
                 .addOnFailureListener(e -> Toast.makeText(newstudent.this, "Failed to add student: " + e.getMessage(), Toast.LENGTH_SHORT).show());
@@ -239,10 +239,10 @@ public class newstudent extends AppCompatActivity {
         // Save student data to the LivingStudent node using PRN as the key
         livingStudentRef.child(prn).setValue(student)
                 .addOnSuccessListener(aVoid -> {
-                    Toast.makeText(this, "Student added to LivingStudent node with room details!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Student Added.", Toast.LENGTH_SHORT).show();
                 })
                 .addOnFailureListener(e -> {
-                    Toast.makeText(this, "Failed to add student to LivingStudent node: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Failed to add student." + e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
     }
 
