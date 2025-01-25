@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -18,16 +19,22 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class studentfees extends AppCompatActivity {
 
     private EditText prnEditText;
     private Button searchButton, updateFeesButton, checkFeesButton, clearButton;
+    private Button halfFeesButton, fullFeesButton; // Buttons for fetching students based on fees status
     private TextView nameTextView, roomTextView, mobileTextView, feesStatusTextView;
     private Spinner feesSpinner;
 
     private DatabaseReference databaseReference;
+
+    private ListView studentListView;
+    private ArrayAdapter<String> listAdapter;
+    private ArrayList<String> studentList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,27 +50,32 @@ public class studentfees extends AppCompatActivity {
         updateFeesButton = findViewById(R.id.buttonUpdateFees);
         checkFeesButton = findViewById(R.id.buttonCheckFees);
         clearButton = findViewById(R.id.buttonClear);
+        halfFeesButton = findViewById(R.id.buttonHalfFees);
+        fullFeesButton = findViewById(R.id.buttonFullFees);
         nameTextView = findViewById(R.id.textViewName);
         roomTextView = findViewById(R.id.textViewRoom);
         mobileTextView = findViewById(R.id.textViewMobile);
         feesStatusTextView = findViewById(R.id.textViewFeesStatus);
         feesSpinner = findViewById(R.id.spinnerFees);
 
-        // Set up Spinner with custom item layout
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(
-                this,
-                R.layout.spinner_item,  // Use the custom layout for spinner items
-                getResources().getStringArray(R.array.fees_options) // Array from resources
-        );
+        // Initialize ListView and adapter
+        studentListView = findViewById(R.id.studentListView);
+        studentList = new ArrayList<>();
+        listAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, studentList);
+        studentListView.setAdapter(listAdapter);
 
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item); // Set the dropdown view
-        feesSpinner.setAdapter(adapter); // Set the adapter to the spinner
+        // Set up Spinner with custom item layout
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.spinner_item, getResources().getStringArray(R.array.fees_options));
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        feesSpinner.setAdapter(adapter);
 
         // Set click listeners
         searchButton.setOnClickListener(v -> fetchStudentDetails());
         updateFeesButton.setOnClickListener(v -> saveDataToStudentFeesNode());
         checkFeesButton.setOnClickListener(v -> fetchFeesStatus());
         clearButton.setOnClickListener(v -> clearFields());
+        halfFeesButton.setOnClickListener(v -> fetchStudentsByFeesStatus("Half Fees Paid"));
+        fullFeesButton.setOnClickListener(v -> fetchStudentsByFeesStatus("Full Fees Paid"));
     }
 
     private void fetchStudentDetails() {
@@ -85,18 +97,16 @@ public class studentfees extends AppCompatActivity {
                     DataSnapshot livingStudentSnapshot = userSnapshot.child("LivingStudent").child(prn);
 
                     if (livingStudentSnapshot.exists()) {
-                        // Retrieve data from the found PRN node
                         String name = livingStudentSnapshot.child("name").getValue(String.class);
                         String room = livingStudentSnapshot.child("room").getValue(String.class);
                         String mobile = livingStudentSnapshot.child("mobile").getValue(String.class);
 
-                        // Populate the TextViews
                         nameTextView.setText("Name: " + (name != null ? name : "Not available"));
                         roomTextView.setText("Room: " + (room != null ? room : "Not available"));
                         mobileTextView.setText("Mobile: " + (mobile != null ? mobile : "Not available"));
 
                         studentFound = true;
-                        break; // Exit the loop since the student is found
+                        break;
                     }
                 }
 
@@ -123,7 +133,6 @@ public class studentfees extends AppCompatActivity {
 
         DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("Users");
 
-        // Fetch the Hostel Name (parent node) for the PRN
         usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -133,10 +142,7 @@ public class studentfees extends AppCompatActivity {
                     DataSnapshot livingStudentSnapshot = hostelSnapshot.child("LivingStudent").child(prn);
 
                     if (livingStudentSnapshot.exists()) {
-                        // Retrieve hostel name (parent node key)
                         String hostelName = hostelSnapshot.getKey();
-
-                        // Retrieve student details
                         String name = nameTextView.getText().toString().replace("Name: ", "");
                         String room = roomTextView.getText().toString().replace("Room: ", "");
                         String mobile = mobileTextView.getText().toString().replace("Mobile: ", "");
@@ -146,28 +152,24 @@ public class studentfees extends AppCompatActivity {
                             return;
                         }
 
-                        // Create a reference to the global StudentFees node
                         DatabaseReference studentFeesRef = databaseReference.child("StudentFees").child(prn);
-
-                        // Prepare data to be stored
                         HashMap<String, Object> dataMap = new HashMap<>();
                         dataMap.put("name", name);
                         dataMap.put("room", room);
                         dataMap.put("mobile", mobile);
                         dataMap.put("feesStatus", selectedFeesOption);
-                        dataMap.put("hostel", hostelName); // Add the hostel name here
+                        dataMap.put("hostel", hostelName);
 
-                        // Store data in the StudentFees node
                         studentFeesRef.updateChildren(dataMap).addOnCompleteListener(task -> {
                             if (task.isSuccessful()) {
-                                Toast.makeText(studentfees.this, "Data stored/updated in StudentFees successfully", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(studentfees.this, "Data stored/updated successfully", Toast.LENGTH_SHORT).show();
                             } else {
-                                Toast.makeText(studentfees.this, "Failed to update StudentFees node", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(studentfees.this, "Failed to update data", Toast.LENGTH_SHORT).show();
                             }
                         });
 
                         prnFound = true;
-                        break; // Exit loop since PRN is found
+                        break;
                     }
                 }
 
@@ -191,14 +193,12 @@ public class studentfees extends AppCompatActivity {
             return;
         }
 
-        // Navigate to the global StudentFees node
         DatabaseReference feesRef = databaseReference.child("StudentFees").child(prn);
 
         feesRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()) {
-                    // Retrieve the feesStatus
                     String name = snapshot.child("name").getValue(String.class);
                     String room = snapshot.child("room").getValue(String.class);
                     String mobile = snapshot.child("mobile").getValue(String.class);
@@ -222,13 +222,51 @@ public class studentfees extends AppCompatActivity {
         });
     }
 
+    private void fetchStudentsByFeesStatus(String status) {
+        DatabaseReference studentFeesRef = databaseReference.child("StudentFees");
+
+        studentFeesRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                studentList.clear();  // Clear previous data
+
+                for (DataSnapshot prnSnapshot : snapshot.getChildren()) {
+                    String feesStatus = prnSnapshot.child("feesStatus").getValue(String.class);
+
+                    if (status.equals(feesStatus)) {
+                        String name = prnSnapshot.child("name").getValue(String.class);
+                        String room = prnSnapshot.child("room").getValue(String.class);
+                        String mobile = prnSnapshot.child("mobile").getValue(String.class);
+
+                        String studentData = "Name: " + (name != null ? name : "N/A") + "\n"
+                                + "Room: " + (room != null ? room : "N/A") + "\n"
+                                + "Mobile: " + (mobile != null ? mobile : "N/A");
+
+                        studentList.add(studentData);  // Add student data to list
+                    }
+                }
+
+                if (studentList.isEmpty()) {
+                    studentList.add("No students found with " + status + " fees");
+                }
+
+                listAdapter.notifyDataSetChanged();  // Notify adapter to update the ListView
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(studentfees.this, "Error: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
     private void clearFields() {
         prnEditText.setText("");
         nameTextView.setText("Name: ");
         roomTextView.setText("Room: ");
         mobileTextView.setText("Mobile: ");
         feesStatusTextView.setText("Fees Status: ");
-        feesSpinner.setSelection(0); // Reset the spinner to the first item
+        feesSpinner.setSelection(0);
         Toast.makeText(this, "Fields cleared", Toast.LENGTH_SHORT).show();
     }
 }

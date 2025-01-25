@@ -75,6 +75,26 @@
             android:layout_marginBottom="16dp"
             android:backgroundTint="#6A0DAD"/>
 
+        <!-- Half Fees Paid Button -->
+        <Button
+            android:id="@+id/buttonHalfFees"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Show Half Fees Paid Students"
+            android:layout_marginBottom="16dp"
+            android:backgroundTint="#6A0DAD"
+            android:textColor="@android:color/white" />
+
+        <!-- Full Fees Paid Button -->
+        <Button
+            android:id="@+id/buttonFullFees"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Show Full Fees Paid Students"
+            android:layout_marginBottom="16dp"
+            android:backgroundTint="#6A0DAD"
+            android:textColor="@android:color/white" />
+
         <!-- TextView for displaying fees status -->
         <TextView
             android:id="@+id/textViewFeesStatus"
@@ -136,6 +156,13 @@
             android:popupBackground="@drawable/rounded_box"
             android:spinnerMode="dropdown"
             android:entries="@array/fees_options" />
+
+        <!-- ListView to display students' data -->
+        <ListView
+            android:id="@+id/studentListView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp" />
 
         <!-- Update Fees Button -->
         <Button

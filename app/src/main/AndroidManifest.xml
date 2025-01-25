@@ -16,9 +16,15 @@
         android:theme="@style/Theme.Hostel"
         tools:targetApi="31">
         <activity
-            android:name=".SplashActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            android:name=".fullfeesstudent"
             android:exported="false" />
+        <activity
+            android:name=".halffeesstudent"
+            android:exported="false" />
+        <activity
+            android:name=".SplashActivity"
+            android:exported="false"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
             android:name=".feedback"
             android:exported="false" />
@@ -52,6 +58,8 @@
         <activity
             android:name=".loginpage"
             android:exported="true">
+
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
