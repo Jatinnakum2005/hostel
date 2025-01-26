@@ -1,5 +1,6 @@
 package com.example.hostel;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.widget.ArrayAdapter;
@@ -74,8 +75,18 @@ public class studentfees extends AppCompatActivity {
         updateFeesButton.setOnClickListener(v -> saveDataToStudentFeesNode());
         checkFeesButton.setOnClickListener(v -> fetchFeesStatus());
         clearButton.setOnClickListener(v -> clearFields());
-        halfFeesButton.setOnClickListener(v -> fetchStudentsByFeesStatus("Half Fees Paid"));
-        fullFeesButton.setOnClickListener(v -> fetchStudentsByFeesStatus("Full Fees Paid"));
+
+        // Navigate to Half Fees Activity
+        halfFeesButton.setOnClickListener(v -> {
+            Intent intent = new Intent(studentfees.this, halffeesstudent.class);
+            startActivity(intent);
+        });
+
+        // Navigate to Full Fees Activity
+        fullFeesButton.setOnClickListener(v -> {
+            Intent intent = new Intent(studentfees.this, fullfeesstudent.class);
+            startActivity(intent);
+        });
     }
 
     private void fetchStudentDetails() {
@@ -213,44 +224,6 @@ public class studentfees extends AppCompatActivity {
                 } else {
                     Toast.makeText(studentfees.this, "No fees status found for this PRN", Toast.LENGTH_SHORT).show();
                 }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(studentfees.this, "Error: " + error.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
-    private void fetchStudentsByFeesStatus(String status) {
-        DatabaseReference studentFeesRef = databaseReference.child("StudentFees");
-
-        studentFeesRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                studentList.clear();  // Clear previous data
-
-                for (DataSnapshot prnSnapshot : snapshot.getChildren()) {
-                    String feesStatus = prnSnapshot.child("feesStatus").getValue(String.class);
-
-                    if (status.equals(feesStatus)) {
-                        String name = prnSnapshot.child("name").getValue(String.class);
-                        String room = prnSnapshot.child("room").getValue(String.class);
-                        String mobile = prnSnapshot.child("mobile").getValue(String.class);
-
-                        String studentData = "Name: " + (name != null ? name : "N/A") + "\n"
-                                + "Room: " + (room != null ? room : "N/A") + "\n"
-                                + "Mobile: " + (mobile != null ? mobile : "N/A");
-
-                        studentList.add(studentData);  // Add student data to list
-                    }
-                }
-
-                if (studentList.isEmpty()) {
-                    studentList.add("No students found with " + status + " fees");
-                }
-
-                listAdapter.notifyDataSetChanged();  // Notify adapter to update the ListView
             }
 
             @Override
