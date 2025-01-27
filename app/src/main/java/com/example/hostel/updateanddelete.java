@@ -9,6 +9,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.database.*;
 
+import java.util.HashMap;
+
 public class updateanddelete extends AppCompatActivity {
 
     private EditText etPrn, etName, etFatherName, etMotherName, etEmail, etMobileno, etAddress, etCollegeName, etRoomNumber;
@@ -17,6 +19,7 @@ public class updateanddelete extends AppCompatActivity {
 
     private DatabaseReference databaseReference;
     private String currentUsername;
+    private DatabaseReference studentNodeRef; // Reference to the current student's node
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,49 +80,35 @@ public class updateanddelete extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 boolean found = false;
+                studentNodeRef = null;
 
-                // Check in LivedDetails
-                DataSnapshot livedDetailsSnapshot = snapshot.child("LivedDetails");
-                if (livedDetailsSnapshot.hasChild(prn)) {
-                    found = true;
+                // Check in Rooms
+                DataSnapshot roomsSnapshot = snapshot.child("Rooms");
+                for (DataSnapshot roomSnapshot : roomsSnapshot.getChildren()) {
+                    DataSnapshot studentsSnapshot = roomSnapshot.child("Students");
 
-                    DataSnapshot studentSnapshot = livedDetailsSnapshot.child(prn);
-                    etName.setText(studentSnapshot.child("name").getValue(String.class));
-                    etFatherName.setText(studentSnapshot.child("fatherName").getValue(String.class));
-                    etMotherName.setText(studentSnapshot.child("motherName").getValue(String.class));
-                    etEmail.setText(studentSnapshot.child("email").getValue(String.class));
-                    etMobileno.setText(studentSnapshot.child("mobile").getValue(String.class));
-                    etAddress.setText(studentSnapshot.child("address").getValue(String.class));
-                    etCollegeName.setText(studentSnapshot.child("collegeName").getValue(String.class));
-                    spinnerLivingStatus.setSelection(1); // Set to "Lived"
+                    for (DataSnapshot studentSnapshot : studentsSnapshot.getChildren()) {
+                        String studentPrn = studentSnapshot.child("prn").getValue(String.class);
+
+                        if (prn.equals(studentPrn)) {
+                            found = true;
+                            studentNodeRef = studentSnapshot.getRef(); // Save reference to the student node
+                            fillStudentDetails(studentSnapshot);
+                            etRoomNumber.setText(roomSnapshot.getKey()); // Display room number
+                            break;
+                        }
+                    }
+
+                    if (found) break;
                 }
 
-                // Check in Rooms if not found in LivedDetails
+                // Check in HostelStudent if not found in Rooms
                 if (!found) {
-                    DataSnapshot roomsSnapshot = snapshot.child("Rooms");
-                    for (DataSnapshot roomSnapshot : roomsSnapshot.getChildren()) {
-                        DataSnapshot studentsSnapshot = roomSnapshot.child("Students");
-
-                        for (DataSnapshot studentSnapshot : studentsSnapshot.getChildren()) {
-                            String studentPrn = studentSnapshot.child("prn").getValue(String.class);
-
-                            if (prn.equals(studentPrn)) {
-                                found = true;
-
-                                etName.setText(studentSnapshot.child("name").getValue(String.class));
-                                etFatherName.setText(studentSnapshot.child("fatherName").getValue(String.class));
-                                etMotherName.setText(studentSnapshot.child("motherName").getValue(String.class));
-                                etEmail.setText(studentSnapshot.child("email").getValue(String.class));
-                                etMobileno.setText(studentSnapshot.child("mobile").getValue(String.class));
-                                etAddress.setText(studentSnapshot.child("address").getValue(String.class));
-                                etCollegeName.setText(studentSnapshot.child("collegeName").getValue(String.class));
-                                etRoomNumber.setText(roomSnapshot.getKey());
-                                spinnerLivingStatus.setSelection(0); // Set to "Living"
-                                break;
-                            }
-                        }
-
-                        if (found) break;
+                    DataSnapshot hostelStudentsSnapshot = snapshot.child("HostelStudent");
+                    if (hostelStudentsSnapshot.hasChild(prn)) {
+                        found = true;
+                        studentNodeRef = hostelStudentsSnapshot.child(prn).getRef(); // Save reference to the student node
+                        fillStudentDetails(hostelStudentsSnapshot.child(prn));
                     }
                 }
 
@@ -135,10 +124,20 @@ public class updateanddelete extends AppCompatActivity {
         });
     }
 
+    private void fillStudentDetails(DataSnapshot studentSnapshot) {
+        etName.setText(studentSnapshot.child("name").getValue(String.class));
+        etFatherName.setText(studentSnapshot.child("fatherName").getValue(String.class));
+        etMotherName.setText(studentSnapshot.child("motherName").getValue(String.class));
+        etEmail.setText(studentSnapshot.child("email").getValue(String.class));
+        etMobileno.setText(studentSnapshot.child("mobile").getValue(String.class));
+        etAddress.setText(studentSnapshot.child("address").getValue(String.class));
+        etCollegeName.setText(studentSnapshot.child("collegeName").getValue(String.class));
+        spinnerLivingStatus.setSelection("Leaved".equals(studentSnapshot.child("status").getValue(String.class)) ? 1 : 0); // Set Living status
+    }
+
     private void updateStudent() {
-        String prn = etPrn.getText().toString().trim();
-        if (prn.isEmpty()) {
-            Toast.makeText(this, "Please enter PRN", Toast.LENGTH_SHORT).show();
+        if (studentNodeRef == null) {
+            Toast.makeText(this, "Please search for a student first!", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -152,84 +151,112 @@ public class updateanddelete extends AppCompatActivity {
         String roomNumber = etRoomNumber.getText().toString().trim();
         String livingStatus = spinnerLivingStatus.getSelectedItem().toString();
 
-        if ("Lived".equals(livingStatus)) {
-            moveToLivedDetails(prn, name, fatherName, motherName, email, mobile, address, collegeName, roomNumber);
-            deleteFromLivingStudents(prn);
-            deleteFromRoom(prn, roomNumber);
+        if (name.isEmpty() || email.isEmpty() || mobile.isEmpty()) {
+            Toast.makeText(this, "Name, Email, and Mobile cannot be empty!", Toast.LENGTH_SHORT).show();
+            return;
         }
-    }
 
-    private void moveToLivedDetails(String prn, String name, String fatherName, String motherName, String email, String mobile, String address, String collegeName, String roomNumber) {
-        DatabaseReference livedDetailsRef = databaseReference.child("LivedDetails").child(prn);
-        livedDetailsRef.child("name").setValue(name);
-        livedDetailsRef.child("fatherName").setValue(fatherName);
-        livedDetailsRef.child("motherName").setValue(motherName);
-        livedDetailsRef.child("email").setValue(email);
-        livedDetailsRef.child("mobile").setValue(mobile);
-        livedDetailsRef.child("address").setValue(address);
-        livedDetailsRef.child("collegeName").setValue(collegeName);
-        livedDetailsRef.child("roomNumber").setValue(roomNumber);
+        HashMap<String, Object> updates = new HashMap<>();
+        updates.put("name", name);
+        updates.put("fatherName", fatherName);
+        updates.put("motherName", motherName);
+        updates.put("email", email);
+        updates.put("mobile", mobile);
+        updates.put("address", address);
+        updates.put("collegeName", collegeName);
+        updates.put("status", livingStatus);
 
-        Toast.makeText(updateanddelete.this, "Student moved to LivedDetails", Toast.LENGTH_SHORT).show();
-    }
+        studentNodeRef.updateChildren(updates).addOnSuccessListener(aVoid -> {
+            Toast.makeText(updateanddelete.this, "Student details updated successfully!", Toast.LENGTH_SHORT).show();
 
-    private void deleteFromLivingStudents(String prn) {
-        databaseReference.child("LivingStudent").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for (DataSnapshot studentSnapshot : snapshot.getChildren()) {
-                    String studentPrn = studentSnapshot.child("prn").getValue(String.class);
-
-                    if (prn.equals(studentPrn)) {
-                        studentSnapshot.getRef().removeValue();
-                        Toast.makeText(updateanddelete.this, "Student deleted from LivingStudent node", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-                }
+            if ("Living".equals(livingStatus)) {
+                updateExistingLivingStudentAndRoom(updates, roomNumber);
+            } else if ("Leaved".equals(livingStatus)) {
+                moveToLeftStudents(updates);
+                removeFromRoomAndHostelStudent(roomNumber);
             }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(updateanddelete.this, "Failed to delete student from LivingStudent node", Toast.LENGTH_SHORT).show();
-            }
+        }).addOnFailureListener(e -> {
+            Toast.makeText(updateanddelete.this, "Failed to update student details!", Toast.LENGTH_SHORT).show();
         });
     }
 
-    private void deleteFromRoom(String prn, String roomNumber) {
-        databaseReference.child("Rooms").child(roomNumber).child("Students").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for (DataSnapshot studentSnapshot : snapshot.getChildren()) {
-                    String studentPrn = studentSnapshot.child("prn").getValue(String.class);
+    private void moveToLeftStudents(HashMap<String, Object> updates) {
+        String prn = etPrn.getText().toString().trim();
+        String roomNumber = etRoomNumber.getText().toString().trim();
 
-                    if (prn.equals(studentPrn)) {
-                        studentSnapshot.getRef().removeValue();
-                        Toast.makeText(updateanddelete.this, "Student deleted from Room " + roomNumber, Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-                }
-            }
+        if (prn.isEmpty()) {
+            Toast.makeText(this, "Please enter PRN", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(updateanddelete.this, "Failed to delete student from Room", Toast.LENGTH_SHORT).show();
-            }
+        if (!roomNumber.isEmpty()) {
+            // Add Room Number to the updates map
+            updates.put("roomNumber", roomNumber);
+        }
+
+        DatabaseReference leftStudentsRef = databaseReference.child("LeftStudents").child(prn);
+        leftStudentsRef.setValue(updates).addOnSuccessListener(aVoid -> {
+            Toast.makeText(updateanddelete.this, "Student moved to LeftStudents with Room Number", Toast.LENGTH_SHORT).show();
+        }).addOnFailureListener(e -> {
+            Toast.makeText(updateanddelete.this, "Failed to move student to LeftStudents!", Toast.LENGTH_SHORT).show();
+        });
+
+        // Remove student from HostelStudent
+        databaseReference.child("HostelStudent").child(prn).removeValue()
+                .addOnSuccessListener(aVoid -> {
+                    Toast.makeText(updateanddelete.this, "Student removed from HostelStudent", Toast.LENGTH_SHORT).show();
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(updateanddelete.this, "Failed to remove student from HostelStudent", Toast.LENGTH_SHORT).show();
+                });
+    }
+
+
+    private void updateExistingLivingStudentAndRoom(HashMap<String, Object> updates, String roomNumber) {
+        if (roomNumber.isEmpty()) {
+            Toast.makeText(this, "Please enter Room Number", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        DatabaseReference roomRef = databaseReference.child("Rooms").child(roomNumber).child("Students").child(etPrn.getText().toString().trim());
+        roomRef.updateChildren(updates).addOnSuccessListener(aVoid -> {
+            Toast.makeText(updateanddelete.this, "Student details updated in Room successfully!", Toast.LENGTH_SHORT).show();
+        }).addOnFailureListener(e -> {
+            Toast.makeText(updateanddelete.this, "Failed to update student in Room!", Toast.LENGTH_SHORT).show();
+        });
+
+        DatabaseReference hostelStudentRef = databaseReference.child("HostelStudent").child(etPrn.getText().toString().trim());
+        hostelStudentRef.updateChildren(updates).addOnSuccessListener(aVoid -> {
+            Toast.makeText(updateanddelete.this, "Student details updated in HostelStudent successfully!", Toast.LENGTH_SHORT).show();
+        }).addOnFailureListener(e -> {
+            Toast.makeText(updateanddelete.this, "Failed to update student in HostelStudent!", Toast.LENGTH_SHORT).show();
         });
     }
 
-    private void deleteStudent() {
+    private void removeFromRoomAndHostelStudent(String roomNumber) {
         String prn = etPrn.getText().toString().trim();
         if (prn.isEmpty()) {
             Toast.makeText(this, "Please enter PRN", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        databaseReference.child("LivedDetails").child(prn).removeValue()
+        if (!roomNumber.isEmpty()) {
+            databaseReference.child("Rooms").child(roomNumber).child("Students").child(prn).removeValue()
+                    .addOnSuccessListener(aVoid -> {
+                        Toast.makeText(updateanddelete.this, "Student removed from Room", Toast.LENGTH_SHORT).show();
+                    })
+                    .addOnFailureListener(e -> {
+                        Toast.makeText(updateanddelete.this, "Failed to remove student from Room", Toast.LENGTH_SHORT).show();
+                    });
+        }
+
+        databaseReference.child("HostelStudent").child(prn).removeValue()
                 .addOnSuccessListener(aVoid -> {
-                    Toast.makeText(updateanddelete.this, "Student deleted successfully from LivedDetails", Toast.LENGTH_SHORT).show();
-                    clearFields();
+                    Toast.makeText(updateanddelete.this, "Student removed from HostelStudent", Toast.LENGTH_SHORT).show();
                 })
-                .addOnFailureListener(e -> Toast.makeText(updateanddelete.this, "Failed to delete student", Toast.LENGTH_SHORT).show());
+                .addOnFailureListener(e -> {
+                    Toast.makeText(updateanddelete.this, "Failed to remove student from HostelStudent", Toast.LENGTH_SHORT).show();
+                });
     }
 
     private void clearFields() {
@@ -242,6 +269,23 @@ public class updateanddelete extends AppCompatActivity {
         etAddress.setText("");
         etCollegeName.setText("");
         etRoomNumber.setText("");
-        spinnerLivingStatus.setSelection(0);
+    }
+
+    private void deleteStudent() {
+        String prn = etPrn.getText().toString().trim();
+
+        if (prn.isEmpty()) {
+            Toast.makeText(this, "Please search for a student first!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        studentNodeRef.removeValue()
+                .addOnSuccessListener(aVoid -> {
+                    Toast.makeText(this, "Student data deleted successfully!", Toast.LENGTH_SHORT).show();
+                    clearFields();
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(this, "Failed to delete student!", Toast.LENGTH_SHORT).show();
+                });
     }
 }

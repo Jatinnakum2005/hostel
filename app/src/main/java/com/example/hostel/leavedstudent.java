@@ -41,7 +41,7 @@ public class leavedstudent extends AppCompatActivity {
             databaseReference = FirebaseDatabase.getInstance()
                     .getReference("Users")
                     .child(username)
-                    .child("LivedDetails");
+                    .child("LeftStudents");
 
             // Fetch data from Firebase
             fetchStudentDetails();
@@ -116,6 +116,4 @@ public class leavedstudent extends AppCompatActivity {
             }
         });
     }
-
-
 }

@@ -183,7 +183,7 @@ public class newstudent extends AppCompatActivity {
 
         // Save student data to both nodes
         saveStudentToFirebase(mobile, name, fatherName, motherName, email, address, collegeName, prn);
-        saveStudentToLivingStudent(mobile, name, fatherName, motherName, email, address, collegeName, prn);
+        saveStudentToHostelStudent(mobile, name, fatherName, motherName, email, address, collegeName, prn);
     }
 
     // Save student to the Rooms node
@@ -212,7 +212,7 @@ public class newstudent extends AppCompatActivity {
     }
 
     // Save student to the LivingStudent node
-    private void saveStudentToLivingStudent(String mobile, String name, String fatherName, String motherName,
+    private void saveStudentToHostelStudent(String mobile, String name, String fatherName, String motherName,
                                             String email, String address, String collegeName, String prn) {
         String username = sharedPreferences.getString("username", null); // Get the logged-in user's username
         if (username == null) {
@@ -220,9 +220,9 @@ public class newstudent extends AppCompatActivity {
             return;
         }
 
-        // Reference to LivingStudent node
-        DatabaseReference livingStudentRef = FirebaseDatabase.getInstance().getReference("Users")
-                .child(username).child("LivingStudent");
+        // Reference to HostelStudent node
+        DatabaseReference hostelStudentRef = FirebaseDatabase.getInstance().getReference("Users")
+                .child(username).child("HostelStudent");
 
         // Create the student object including the room number
         Map<String, Object> student = new HashMap<>();
@@ -236,15 +236,16 @@ public class newstudent extends AppCompatActivity {
         student.put("prn", prn);
         student.put("room", selectedRoom); // Add the room number to the student details
 
-        // Save student data to the LivingStudent node using PRN as the key
-        livingStudentRef.child(prn).setValue(student)
+        // Save student data to the HostelStudent node using PRN as the key
+        hostelStudentRef.child(prn).setValue(student)
                 .addOnSuccessListener(aVoid -> {
-                    Toast.makeText(this, "Student added to LivingStudent node with room details!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Student added to HostelStudent node with room details!", Toast.LENGTH_SHORT).show();
                 })
                 .addOnFailureListener(e -> {
-                    Toast.makeText(this, "Failed to add student to LivingStudent node: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Failed to add student to HostelStudent node: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
     }
+
 
     // Clear all input fields
     private void clearFields() {

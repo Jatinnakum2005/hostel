@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -43,8 +44,11 @@ public class allstudentliving extends AppCompatActivity {
             return;
         }
 
-        // Initialize Firebase database reference for LivingStudent node
-        databaseReference = FirebaseDatabase.getInstance().getReference("Users").child(username).child("LivingStudent");
+        // Debugging: Log the username for verification
+        Log.d("Username", "Logged-in user: " + username);
+
+        // Initialize Firebase database reference for HostelStudent node
+        databaseReference = FirebaseDatabase.getInstance().getReference("Users").child(username).child("HostelStudent");
 
         // Initialize UI components
         searchEditText = findViewById(R.id.searchEditText);
@@ -86,20 +90,26 @@ public class allstudentliving extends AppCompatActivity {
 
                 for (DataSnapshot studentSnapshot : snapshot.getChildren()) {
                     String prn = studentSnapshot.getKey(); // PRN as the key
+
+                    // Check if student data exists
                     String name = studentSnapshot.child("name").getValue(String.class);
                     String mobile = studentSnapshot.child("mobile").getValue(String.class);
                     String room = studentSnapshot.child("room").getValue(String.class);
 
-                    if (prn != null && name != null && mobile != null && room != null) {
+                    if (prn != null) {
                         detailsBuilder.append("PRN: ").append(prn).append("\n");
-                        detailsBuilder.append("Name: ").append(name).append("\n");
-                        detailsBuilder.append("Mobile: ").append(mobile).append("\n");
-                        detailsBuilder.append("Room: ").append(room).append("\n\n");
+
+                        // Include additional data if available
+                        if (name != null) detailsBuilder.append("Name: ").append(name).append("\n");
+                        if (mobile != null) detailsBuilder.append("Mobile: ").append(mobile).append("\n");
+                        if (room != null) detailsBuilder.append("Room: ").append(room).append("\n");
+
+                        detailsBuilder.append("\n"); // Add spacing between student entries
                     }
                 }
 
                 if (detailsBuilder.length() == 0) {
-                    studentDetailsTextView.setText("No living students found.");
+                    studentDetailsTextView.setText("No hostel students found.");
                 } else {
                     studentDetailsTextView.setText(detailsBuilder.toString());
                 }
@@ -122,14 +132,14 @@ public class allstudentliving extends AppCompatActivity {
                     String mobile = studentSnapshot.child("mobile").getValue(String.class);
                     String room = studentSnapshot.child("room").getValue(String.class);
 
-                    if (name != null && mobile != null && room != null) {
-                        String studentDetails = "PRN: " + prnQuery + "\n" +
-                                "Name: " + name + "\n" +
-                                "Mobile: " + mobile + "\n" +
-                                "Room: " + room;
+                    StringBuilder studentDetails = new StringBuilder();
+                    studentDetails.append("PRN: ").append(prnQuery).append("\n");
 
-                        studentDetailsTextView.setText(studentDetails);
-                    }
+                    if (name != null) studentDetails.append("Name: ").append(name).append("\n");
+                    if (mobile != null) studentDetails.append("Mobile: ").append(mobile).append("\n");
+                    if (room != null) studentDetails.append("Room: ").append(room);
+
+                    studentDetailsTextView.setText(studentDetails.toString());
                 } else {
                     studentDetailsTextView.setText("No student found with PRN: " + prnQuery);
                 }
