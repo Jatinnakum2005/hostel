@@ -49,9 +49,9 @@
             android:textSize="16sp"
             android:textStyle="bold"
             android:layout_marginBottom="16dp"
-            android:backgroundTint="#6A0DAD"/>
+            android:backgroundTint="#6A0DAD" />
 
-        <!-- Button to check fees status -->
+        <!-- Check Fees Status Button -->
         <Button
             android:id="@+id/buttonCheckFees"
             android:layout_width="match_parent"
@@ -61,7 +61,7 @@
             android:textSize="16sp"
             android:textStyle="bold"
             android:layout_marginBottom="16dp"
-            android:backgroundTint="#6A0DAD"/>
+            android:backgroundTint="#6A0DAD" />
 
         <!-- Clear Button -->
         <Button
@@ -73,29 +73,33 @@
             android:textSize="16sp"
             android:textStyle="bold"
             android:layout_marginBottom="16dp"
-            android:backgroundTint="#6A0DAD"/>
+            android:backgroundTint="#6A0DAD" />
 
-        <!-- Half Fees Paid Button -->
+        <!-- Half Fees Students Button -->
         <Button
             android:id="@+id/buttonHalfFees"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Show Half Fees Paid Students"
+            android:text="Half Fees Students"
+            android:textColor="@android:color/white"
+            android:textSize="16sp"
+            android:textStyle="bold"
             android:layout_marginBottom="16dp"
-            android:backgroundTint="#6A0DAD"
-            android:textColor="@android:color/white" />
+            android:backgroundTint="#6A0DAD" />
 
-        <!-- Full Fees Paid Button -->
+        <!-- Full Fees Students Button -->
         <Button
             android:id="@+id/buttonFullFees"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Show Full Fees Paid Students"
+            android:text="Full Fees Students"
+            android:textColor="@android:color/white"
+            android:textSize="16sp"
+            android:textStyle="bold"
             android:layout_marginBottom="16dp"
-            android:backgroundTint="#6A0DAD"
-            android:textColor="@android:color/white" />
+            android:backgroundTint="#6A0DAD" />
 
-        <!-- TextView for displaying fees status -->
+        <!-- TextView for Fees Status -->
         <TextView
             android:id="@+id/textViewFeesStatus"
             android:layout_width="match_parent"
@@ -108,7 +112,7 @@
             android:padding="8dp"
             android:layout_marginBottom="16dp" />
 
-        <!-- TextView for displaying student name -->
+        <!-- TextView for Name -->
         <TextView
             android:id="@+id/textViewName"
             android:layout_width="match_parent"
@@ -121,7 +125,19 @@
             android:padding="8dp"
             android:layout_marginBottom="16dp" />
 
-        <!-- TextView for displaying student room -->
+        <TextView
+            android:id="@+id/hostelName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Hostel: "
+            android:textSize="16sp"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:background="@drawable/rounded_box"
+            android:padding="8dp"
+            android:layout_marginBottom="16dp" />
+
+        <!-- TextView for Room -->
         <TextView
             android:id="@+id/textViewRoom"
             android:layout_width="match_parent"
@@ -134,7 +150,7 @@
             android:padding="8dp"
             android:layout_marginBottom="16dp" />
 
-        <!-- TextView for displaying student mobile number -->
+        <!-- TextView for Mobile -->
         <TextView
             android:id="@+id/textViewMobile"
             android:layout_width="match_parent"
@@ -147,7 +163,7 @@
             android:padding="8dp"
             android:layout_marginBottom="16dp" />
 
-        <!-- Spinner for selecting fees status -->
+        <!-- Spinner for Fees Options -->
         <Spinner
             android:id="@+id/spinnerFees"
             android:layout_width="match_parent"
@@ -156,13 +172,6 @@
             android:popupBackground="@drawable/rounded_box"
             android:spinnerMode="dropdown"
             android:entries="@array/fees_options" />
-
-        <!-- ListView to display students' data -->
-        <ListView
-            android:id="@+id/studentListView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp" />
 
         <!-- Update Fees Button -->
         <Button
@@ -174,6 +183,6 @@
             android:textSize="16sp"
             android:textStyle="bold"
             android:layout_marginBottom="16dp"
-            android:backgroundTint="#6A0DAD"/>
+            android:backgroundTint="#6A0DAD" />
     </LinearLayout>
 </ScrollView>
