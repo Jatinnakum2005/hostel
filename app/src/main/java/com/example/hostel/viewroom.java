@@ -35,7 +35,7 @@ public class viewroom extends AppCompatActivity {
         setContentView(R.layout.activity_viewroom); // Ensure this matches your XML layout filename
 
         // Initialize views
-        roomsContainer = findViewById(R.id.roomsContainer);
+        roomsContainer = findViewById(R.id.roomContainer);
 
         // Get the currently logged-in username from SharedPreferences
         SharedPreferences sharedPreferences = getSharedPreferences("LoginPrefs", MODE_PRIVATE);
@@ -84,7 +84,7 @@ public class viewroom extends AppCompatActivity {
                         // Create a TextView for room details
                         TextView roomDetailsTextView = new TextView(viewroom.this);
                         roomDetailsTextView.setText(String.format(
-                                "Room Number: %s\nStatus: %s\nAvailable Slots: %d/%d",
+                                "Room Number: %s\nStatus: %s\nAvailable Slots: %d",
                                 roomNumber, roomStatus, availableSlots, maxSlots
                         ));
                         roomDetailsTextView.setTextColor(Color.BLACK);
@@ -107,11 +107,12 @@ public class viewroom extends AppCompatActivity {
                             studentDetails.add("No students in this room");
                         }
 
+                        // Adapter with white text color
                         ArrayAdapter<String> adapter = new ArrayAdapter<String>(viewroom.this, android.R.layout.simple_spinner_item, studentDetails) {
                             @Override
                             public View getView(int position, View convertView, ViewGroup parent) {
                                 TextView textView = (TextView) super.getView(position, convertView, parent);
-                                textView.setTextColor(Color.BLACK); // Normal black color for students
+                                textView.setTextColor(Color.WHITE); // Set selected text color to white
                                 textView.setTypeface(null, Typeface.NORMAL);
                                 return textView;
                             }
@@ -119,11 +120,12 @@ public class viewroom extends AppCompatActivity {
                             @Override
                             public View getDropDownView(int position, View convertView, ViewGroup parent) {
                                 TextView textView = (TextView) super.getDropDownView(position, convertView, parent);
-                                textView.setTextColor(Color.BLACK); // Normal black color for students
+                                textView.setTextColor(Color.WHITE); // Set dropdown list text color to white
                                 textView.setTypeface(null, Typeface.NORMAL);
                                 return textView;
                             }
                         };
+
                         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                         studentDropdown.setAdapter(adapter);
 

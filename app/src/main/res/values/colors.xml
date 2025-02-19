@@ -1,7 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
-    <color name="bg">#F5F5F5</color>
-    <color name="header_background">#f1f1f1</color>
+    <!-- Basic Colors -->
+    <color name="black">#FF000000</color> <!-- Black -->
+    <color name="white">#FFFFFFFF</color> <!-- White -->
+    <color name="bg">#F5F5F5</color> <!-- Light Gray -->
+    <color name="header_background">#F1F1F1</color> <!-- Soft Gray -->
+
+    <!-- Primary Colors -->
+    <color name="primary">#6200EE</color> <!-- Purple -->
+    <color name="primary_variant">#3700B3</color> <!-- Dark Purple -->
+    <color name="secondary">#03DAC6</color> <!-- Teal -->
+    <color name="secondary_variant">#018786</color> <!-- Dark Teal -->
+
+    <!-- Status Colors -->
+    <color name="error">#B00020</color> <!-- Red -->
+    <color name="success">#4CAF50</color> <!-- Green -->
+    <color name="warning">#FFC107</color> <!-- Amber -->
+    <color name="info">#2196F3</color> <!-- Blue -->
+
+    <!-- Text Colors -->
+    <color name="text_primary">#212121</color> <!-- Dark Gray (Primary Text) -->
+    <color name="text_secondary">#757575</color> <!-- Medium Gray (Secondary Text) -->
+
+    <!-- Other Colors -->
+    <color name="divider">#BDBDBD</color> <!-- Light Gray -->
+    <color name="background_light">#FAFAFA</color> <!-- Almost White -->
+    <color name="background_dark">#121212</color> <!-- Very Dark Gray -->
+    <color name="button_normal">#008577</color> <!-- Deep Teal -->
+    <color name="button_pressed">#00574B</color> <!-- Darker Teal -->
+    <color name="gold">#FFD700</color> <!-- Gold -->
+    <color name="silver">#C0C0C0</color> <!-- Silver -->
+    <color name="bronze">#CD7F32</color> <!-- Bronze -->
+    <color name="sky_blue">#87CEEB</color> <!-- Sky Blue -->
+    <color name="navy_blue">#000080</color> <!-- Navy Blue -->
+    <color name="olive_green">#808000</color> <!-- Olive Green -->
+    <color name="dark_red">#8B0000</color> <!-- Dark Red -->
+    <color name="light_pink">#FFB6C1</color> <!-- Light Pink -->
+    <color name="deep_orange">#FF5722</color> <!-- Deep Orange -->
 </resources>

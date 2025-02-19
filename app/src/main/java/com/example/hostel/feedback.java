@@ -144,7 +144,7 @@ public class feedback extends AppCompatActivity {
 
         // Thank-you email to user
         String userEmailSubject = "Thank You for Your Feedback!";
-        String userEmailBody = "Dear " + userName + ",\n\nThank you for your valuable feedback.\n\nBest Regards,\nLaundryTo Team";
+        String userEmailBody = "Dear " + userName + ",\n\nThank you for your valuable feedback.\n\nBest Regards,\nHLH Team";
 
         // Send emails
         new Thread(() -> {

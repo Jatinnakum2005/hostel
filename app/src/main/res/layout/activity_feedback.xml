@@ -25,16 +25,17 @@
                 android:gravity="center_vertical">
 
                 <!-- Back Button -->
+
+                <!-- Title -->
                 <ImageView
                     android:id="@+id/back_button_feedback"
                     android:layout_width="50dp"
-                    android:layout_height="50dp"
+                    android:layout_height="48dp"
                     android:layout_marginTop="5dp"
                     android:contentDescription="Back Button"
                     android:padding="8dp"
-                    android:src="@drawable/room" />
+                    android:src="@drawable/backarroww" />
 
-                <!-- Title -->
                 <TextView
                     android:id="@+id/feedback_title"
                     android:layout_width="wrap_content"

@@ -105,7 +105,7 @@ public class studentfees extends AppCompatActivity {
                 boolean studentFound = false;
 
                 for (DataSnapshot userSnapshot : snapshot.getChildren()) {
-                    DataSnapshot livingStudentSnapshot = userSnapshot.child("LivingStudent").child(prn);
+                    DataSnapshot livingStudentSnapshot = userSnapshot.child("HostelStudent").child(prn);
 
                     if (livingStudentSnapshot.exists()) {
                         String name = livingStudentSnapshot.child("name").getValue(String.class);
@@ -150,7 +150,7 @@ public class studentfees extends AppCompatActivity {
                 boolean prnFound = false;
 
                 for (DataSnapshot hostelSnapshot : snapshot.getChildren()) {
-                    DataSnapshot livingStudentSnapshot = hostelSnapshot.child("LivingStudent").child(prn);
+                    DataSnapshot livingStudentSnapshot = hostelSnapshot.child("HostelStudent").child(prn);
 
                     if (livingStudentSnapshot.exists()) {
                         String hostelName = hostelSnapshot.getKey();
@@ -169,7 +169,6 @@ public class studentfees extends AppCompatActivity {
                         dataMap.put("room", room);
                         dataMap.put("mobile", mobile);
                         dataMap.put("feesStatus", selectedFeesOption);
-                        dataMap.put("hostel", hostelName);
 
                         studentFeesRef.updateChildren(dataMap).addOnCompleteListener(task -> {
                             if (task.isSuccessful()) {
