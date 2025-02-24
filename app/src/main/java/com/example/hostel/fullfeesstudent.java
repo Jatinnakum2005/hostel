@@ -1,9 +1,14 @@
 package com.example.hostel;
 
-import android.content.SharedPreferences;
+import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
-import android.widget.ArrayAdapter;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -20,7 +25,7 @@ import java.util.ArrayList;
 public class fullfeesstudent extends AppCompatActivity {
 
     private ListView fullFeesListView;
-    private ArrayAdapter<String> adapter;
+    private CustomAdapter adapter;
     private ArrayList<String> studentList;
     private DatabaseReference databaseReference;
 
@@ -35,10 +40,10 @@ public class fullfeesstudent extends AppCompatActivity {
         // Initialize ListView and ArrayList
         fullFeesListView = findViewById(R.id.fullfeesListView);
         studentList = new ArrayList<>();
-        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, studentList);
+        adapter = new CustomAdapter(this, studentList);
         fullFeesListView.setAdapter(adapter);
 
-        // Fetch students with "Full Fees Paid" status (without filtering by hostel)
+        // Fetch students with "Full Fees Paid" status
         fetchFullFeesStudents();
     }
 
@@ -72,5 +77,37 @@ public class fullfeesstudent extends AppCompatActivity {
                 Toast.makeText(fullfeesstudent.this, "Error: " + error.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private static class CustomAdapter extends android.widget.ArrayAdapter<String> {
+
+        public CustomAdapter(Context context, ArrayList<String> studentList) {
+            super(context, android.R.layout.simple_list_item_1, studentList);
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            View view = super.getView(position, convertView, parent);
+
+            TextView textView = view.findViewById(android.R.id.text1);
+            textView.setTextColor(Color.WHITE); // Set text color to black
+            textView.setPadding(32, 32, 32, 32); // Add padding for better spacing
+
+            // Add horizontal line
+            View separator = new View(getContext());
+            separator.setLayoutParams(new ViewGroup.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    2
+            ));
+            separator.setBackgroundColor(android.graphics.Color.GRAY);
+
+            // Create a container for text and separator
+            LinearLayout container = new LinearLayout(getContext());
+            container.setOrientation(LinearLayout.VERTICAL);
+            container.addView(textView);
+            container.addView(separator);
+
+            return container;
+        }
     }
 }

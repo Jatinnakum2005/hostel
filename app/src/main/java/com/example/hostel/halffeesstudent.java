@@ -1,9 +1,13 @@
 package com.example.hostel;
 
-import android.content.SharedPreferences;
+import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
-import android.widget.ArrayAdapter;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -20,25 +24,14 @@ import java.util.ArrayList;
 public class halffeesstudent extends AppCompatActivity {
 
     private ListView halfFeesListView;
-    private ArrayAdapter<String> adapter;
+    private CustomAdapter adapter;
     private ArrayList<String> studentList;
     private DatabaseReference databaseReference;
-    private String loggedInUsername; // To store the logged-in username (same as hostel name)
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_halffeesstudent);
-
-        // Retrieve logged-in username from SharedPreferences
-        SharedPreferences preferences = getSharedPreferences("LoginPrefs", MODE_PRIVATE);
-        loggedInUsername = preferences.getString("username", ""); // Retrieve username as hostel name
-
-        if (loggedInUsername.isEmpty()) {
-            Toast.makeText(this, "User not logged in. Please log in again.", Toast.LENGTH_SHORT).show();
-            finish();
-            return;
-        }
+        setContentView(R.layout.activity_halffeesstudent);  // Make sure you create this XML layout
 
         // Initialize Firebase reference
         databaseReference = FirebaseDatabase.getInstance().getReference("StudentFees");
@@ -46,43 +39,74 @@ public class halffeesstudent extends AppCompatActivity {
         // Initialize ListView and ArrayList
         halfFeesListView = findViewById(R.id.halfFeesListView);
         studentList = new ArrayList<>();
-        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, studentList);
+        adapter = new CustomAdapter(this, studentList);
         halfFeesListView.setAdapter(adapter);
 
-        // Fetch students with "Half Fees Paid" status and matching hostel name (username)
+        // Fetch students with "Half Fees Paid" status
         fetchHalfFeesStudents();
     }
 
     private void fetchHalfFeesStudents() {
-        databaseReference.orderByChild("hostel").equalTo(loggedInUsername) // Query to filter by hostel name
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        studentList.clear();
-                        for (DataSnapshot studentSnapshot : snapshot.getChildren()) {
-                            String feesStatus = studentSnapshot.child("feesStatus").getValue(String.class);
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                studentList.clear();
+                for (DataSnapshot studentSnapshot : snapshot.getChildren()) {
+                    String feesStatus = studentSnapshot.child("feesStatus").getValue(String.class);
 
-                            // Check if the fees status is "Half Fees Paid"
-                            if ("Half Fees Paid".equals(feesStatus)) {
-                                String name = studentSnapshot.child("name").getValue(String.class);
-                                String room = studentSnapshot.child("room").getValue(String.class);
-                                String mobile = studentSnapshot.child("mobile").getValue(String.class);
+                    // Check if the fees status is "Half Fees Paid"
+                    if ("Half Fees Paid".equals(feesStatus)) {
+                        String name = studentSnapshot.child("name").getValue(String.class);
+                        String room = studentSnapshot.child("room").getValue(String.class);
+                        String mobile = studentSnapshot.child("mobile").getValue(String.class);
 
-                                String studentInfo = "Name: " + name + "\nRoom: " + room + "\nMobile: " + mobile;
-                                studentList.add(studentInfo);
-                            }
-                        }
-                        adapter.notifyDataSetChanged();
-
-                        if (studentList.isEmpty()) {
-                            Toast.makeText(halffeesstudent.this, "No students found with 'Half Fees Paid' for your hostel.", Toast.LENGTH_SHORT).show();
-                        }
+                        String studentInfo = "Name: " + name + "\nRoom: " + room + "\nMobile: " + mobile;
+                        studentList.add(studentInfo);
                     }
+                }
+                adapter.notifyDataSetChanged();
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-                        Toast.makeText(halffeesstudent.this, "Error: " + error.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                });
+                if (studentList.isEmpty()) {
+                    Toast.makeText(halffeesstudent.this, "No students found with 'Half Fees Paid'.", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(halffeesstudent.this, "Error: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private static class CustomAdapter extends android.widget.ArrayAdapter<String> {
+
+        public CustomAdapter(Context context, ArrayList<String> studentList) {
+            super(context, android.R.layout.simple_list_item_1, studentList);
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            View view = super.getView(position, convertView, parent);
+
+            TextView textView = view.findViewById(android.R.id.text1);
+            textView.setTextColor(Color.WHITE); // Set text color to black
+            textView.setPadding(32, 32, 32, 32); // Add padding for better spacing
+
+            // Add horizontal line
+            View separator = new View(getContext());
+            separator.setLayoutParams(new ViewGroup.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    2
+            ));
+            separator.setBackgroundColor(android.graphics.Color.GRAY);
+
+            // Create a container for text and separator
+            LinearLayout container = new LinearLayout(getContext());
+            container.setOrientation(LinearLayout.VERTICAL);
+            container.addView(textView);
+            container.addView(separator);
+
+            return container;
+        }
     }
 }
