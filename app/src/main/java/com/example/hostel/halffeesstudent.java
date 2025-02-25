@@ -89,7 +89,7 @@ public class halffeesstudent extends AppCompatActivity {
             View view = super.getView(position, convertView, parent);
 
             TextView textView = view.findViewById(android.R.id.text1);
-            textView.setTextColor(Color.WHITE); // Set text color to black
+            textView.setTextColor(Color.BLACK); // Set text color to black
             textView.setPadding(32, 32, 32, 32); // Add padding for better spacing
 
             // Add horizontal line
