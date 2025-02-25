@@ -1,6 +1,7 @@
 package com.example.hostel;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -48,15 +49,21 @@ public class fullfeesstudent extends AppCompatActivity {
     }
 
     private void fetchFullFeesStudents() {
+        String loggedInUsername = getLoggedInUsername();
+
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 studentList.clear();
                 for (DataSnapshot studentSnapshot : snapshot.getChildren()) {
                     String feesStatus = studentSnapshot.child("feesStatus").getValue(String.class);
+                    String hostelName = studentSnapshot.child("hostelName").getValue(String.class);
 
-                    // Check if the fees status is "Full Fees Paid"
-                    if ("Full Fees Paid".equals(feesStatus)) {
+                    // Check both conditions: fees status is "Full Fees Paid" AND hostelName matches
+                    if ("Full Fees Paid".equals(feesStatus) &&
+                            loggedInUsername != null &&
+                            loggedInUsername.equals(hostelName)) {
+
                         String name = studentSnapshot.child("name").getValue(String.class);
                         String room = studentSnapshot.child("room").getValue(String.class);
                         String mobile = studentSnapshot.child("mobile").getValue(String.class);
@@ -68,7 +75,9 @@ public class fullfeesstudent extends AppCompatActivity {
                 adapter.notifyDataSetChanged();
 
                 if (studentList.isEmpty()) {
-                    Toast.makeText(fullfeesstudent.this, "No students found with 'Full Fees Paid'.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(fullfeesstudent.this,
+                            "No students found with 'Full Fees Paid' in hostel " + loggedInUsername,
+                            Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -78,6 +87,13 @@ public class fullfeesstudent extends AppCompatActivity {
             }
         });
     }
+
+    private String getLoggedInUsername() {
+        SharedPreferences prefs = getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE);
+        return prefs.getString("username", ""); // "" is the default if not found
+    }
+
+
 
     private static class CustomAdapter extends android.widget.ArrayAdapter<String> {
 

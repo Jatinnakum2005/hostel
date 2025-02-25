@@ -1,6 +1,7 @@
 package com.example.hostel;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
@@ -47,15 +48,21 @@ public class halffeesstudent extends AppCompatActivity {
     }
 
     private void fetchHalfFeesStudents() {
+        String loggedInUsername = getLoggedInUsername();
+
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 studentList.clear();
                 for (DataSnapshot studentSnapshot : snapshot.getChildren()) {
                     String feesStatus = studentSnapshot.child("feesStatus").getValue(String.class);
+                    String hostelName = studentSnapshot.child("hostelName").getValue(String.class);
 
-                    // Check if the fees status is "Half Fees Paid"
-                    if ("Half Fees Paid".equals(feesStatus)) {
+                    // Check both conditions: fees status is "Full Fees Paid" AND hostelName matches
+                    if ("Half Fees Paid".equals(feesStatus) &&
+                            loggedInUsername != null &&
+                            loggedInUsername.equals(hostelName)) {
+
                         String name = studentSnapshot.child("name").getValue(String.class);
                         String room = studentSnapshot.child("room").getValue(String.class);
                         String mobile = studentSnapshot.child("mobile").getValue(String.class);
@@ -67,7 +74,9 @@ public class halffeesstudent extends AppCompatActivity {
                 adapter.notifyDataSetChanged();
 
                 if (studentList.isEmpty()) {
-                    Toast.makeText(halffeesstudent.this, "No students found with 'Half Fees Paid'.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(halffeesstudent.this,
+                            "No students found with 'Half Fees Paid' in hostel " + loggedInUsername,
+                            Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -76,6 +85,11 @@ public class halffeesstudent extends AppCompatActivity {
                 Toast.makeText(halffeesstudent.this, "Error: " + error.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private String getLoggedInUsername() {
+        SharedPreferences prefs = getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE);
+        return prefs.getString("username", ""); // "" is the default if not found
     }
 
     private static class CustomAdapter extends android.widget.ArrayAdapter<String> {
