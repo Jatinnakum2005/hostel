@@ -4,12 +4,21 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:gravity="center"
-    android:background="@android:color/white">
+    android:background="@drawable/bg2">
+
+
+    <ImageView
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:background="@drawable/rounded_box2"
+        android:contentDescription="App Logo"
+        android:src="@drawable/logo" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Welcome to Hostel App"
+        android:text="HOSTEL LIKE HOME "
+        android:textColor="@android:color/black"
         android:textSize="32sp"
-        android:textColor="@android:color/black"/>
+        android:textStyle="bold" />
 </LinearLayout>
