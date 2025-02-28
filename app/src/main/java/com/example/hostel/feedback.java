@@ -119,7 +119,7 @@ public class feedback extends AppCompatActivity {
                         Toast.makeText(this, "Unable to retrieve user email.", Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    Toast.makeText(this, "Failed to fetch user email from database.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Failed to fetch user email.", Toast.LENGTH_SHORT).show();
                 }
             });
         } else {

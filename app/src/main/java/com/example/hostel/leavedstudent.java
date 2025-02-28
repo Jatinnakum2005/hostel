@@ -105,7 +105,7 @@ public class leavedstudent extends AppCompatActivity {
                     }
                 } else {
                     Log.e(TAG, "Snapshot does not exist!");
-                    Toast.makeText(leavedstudent.this, "No data found in Firebase!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(leavedstudent.this, "No data found.", Toast.LENGTH_SHORT).show();
                 }
             }
 

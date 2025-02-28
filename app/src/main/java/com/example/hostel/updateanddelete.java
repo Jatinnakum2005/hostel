@@ -171,7 +171,7 @@ public class updateanddelete extends AppCompatActivity {
 
             if ("Living".equals(livingStatus)) {
                 updateExistingLivingStudentAndRoom(updates, roomNumber);
-            } else if ("Leaved".equals(livingStatus)) {
+            } else if ("Left".equals(livingStatus)) {
                 moveToLeftStudents(updates);
                 removeFromRoomAndHostelStudent(roomNumber);
             }
@@ -196,9 +196,9 @@ public class updateanddelete extends AppCompatActivity {
 
         DatabaseReference leftStudentsRef = databaseReference.child("LeftStudents").child(prn);
         leftStudentsRef.setValue(updates).addOnSuccessListener(aVoid -> {
-            Toast.makeText(updateanddelete.this, "Student moved to LeftStudents with Room Number", Toast.LENGTH_SHORT).show();
+            Toast.makeText(updateanddelete.this, "Student moved to LeftStudents", Toast.LENGTH_SHORT).show();
         }).addOnFailureListener(e -> {
-            Toast.makeText(updateanddelete.this, "Failed to move student to LeftStudents!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(updateanddelete.this, "Failed to move student to LeftStudents", Toast.LENGTH_SHORT).show();
         });
 
         // Remove student from HostelStudent

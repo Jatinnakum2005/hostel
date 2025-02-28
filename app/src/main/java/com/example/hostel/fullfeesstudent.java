@@ -76,7 +76,7 @@ public class fullfeesstudent extends AppCompatActivity {
 
                 if (studentList.isEmpty()) {
                     Toast.makeText(fullfeesstudent.this,
-                            "No students found with 'Full Fees Paid' in hostel " + loggedInUsername,
+                            "No students found. " + loggedInUsername,
                             Toast.LENGTH_SHORT).show();
                 }
             }

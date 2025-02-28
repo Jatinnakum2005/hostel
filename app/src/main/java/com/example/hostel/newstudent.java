@@ -239,10 +239,10 @@ public class newstudent extends AppCompatActivity {
         // Save student data to the HostelStudent node using PRN as the key
         hostelStudentRef.child(prn).setValue(student)
                 .addOnSuccessListener(aVoid -> {
-                    Toast.makeText(this, "Student added to HostelStudent node with room details!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Student added.", Toast.LENGTH_SHORT).show();
                 })
                 .addOnFailureListener(e -> {
-                    Toast.makeText(this, "Failed to add student to HostelStudent node: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Failed to add student. " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
     }
 

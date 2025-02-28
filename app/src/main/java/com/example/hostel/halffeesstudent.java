@@ -75,7 +75,7 @@ public class halffeesstudent extends AppCompatActivity {
 
                 if (studentList.isEmpty()) {
                     Toast.makeText(halffeesstudent.this,
-                            "No students found with 'Half Fees Paid' in hostel " + loggedInUsername,
+                            "No students found. " + loggedInUsername,
                             Toast.LENGTH_SHORT).show();
                 }
             }
