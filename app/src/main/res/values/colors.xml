@@ -41,5 +41,5 @@
     <color name="splash_text_color">#000000</color>   <!-- Black text color -->
     <color name="colorPrimary">#6A0DAD</color>
     <color name="colorPrimaryDark">#4B0082</color>
-    <color name="colorAccent">#9370DB</color>
+    <color name="colorAccent">#9370DB</color>0000
 </resources>
