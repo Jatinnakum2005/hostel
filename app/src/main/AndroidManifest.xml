@@ -21,6 +21,10 @@
         <activity
             android:name=".halffeesstudent"
             android:exported="false" />
+        <activity
+            android:name=".SplashActivity"
+            android:exported="true" />
+
 
         <activity
             android:name=".feedback"
@@ -54,11 +58,9 @@
             android:exported="false" />
         <activity
             android:name=".loginpage"
-            android:exported="false"/>
+            android:exported="true">
 
-<activity
-    android:name=".SplashActivity"
-    android:exported="true">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
