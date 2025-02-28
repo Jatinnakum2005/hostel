@@ -1,11 +1,16 @@
 package com.example.hostel;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -59,7 +64,7 @@ public class studentfees extends AppCompatActivity {
         roomTextView = findViewById(R.id.textViewRoom);
         mobileTextView = findViewById(R.id.textViewMobile);
         feesStatusTextView = findViewById(R.id.textViewFeesStatus);
-        hostelNameTextView = findViewById(R.id.textViewHostelName); // New TextView for Hostel Name
+        hostelNameTextView = findViewById(R.id.textViewHostelName);
         feesSpinner = findViewById(R.id.spinnerFees);
 
         // Initialize ListView and adapter
@@ -68,9 +73,57 @@ public class studentfees extends AppCompatActivity {
         listAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, studentList);
         studentListView.setAdapter(listAdapter);
 
-        // Set up Spinner with custom item layout
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.spinner_item, getResources().getStringArray(R.array.fees_options));
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        // Set up Spinner with custom styling
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_spinner_item,
+                getResources().getStringArray(R.array.fees_options)) {
+
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+                View view = super.getView(position, convertView, parent);
+                TextView text = (TextView) view.findViewById(android.R.id.text1);
+                text.setTextColor(Color.BLACK);
+                text.setTypeface(null, Typeface.BOLD);
+                return view;
+            }
+
+            @Override
+            public View getDropDownView(int position, View convertView, ViewGroup parent) {
+                // Create a LinearLayout to hold the text view and divider
+                LinearLayout layout = new LinearLayout(getContext());
+                layout.setOrientation(LinearLayout.VERTICAL);
+
+                // Create and style the text view
+                TextView textView = new TextView(getContext());
+                textView.setId(android.R.id.text1);
+                textView.setText(getItem(position));
+                textView.setTextColor(Color.BLACK);
+                textView.setTypeface(null, Typeface.BOLD);
+
+                // Increased padding (Left, Top, Right, Bottom)
+                textView.setPadding(30, 30, 30, 30);
+
+                textView.setTextSize(16);
+
+                // Add the text view to the layout
+                layout.addView(textView);
+
+                // Add a divider except for the last item
+                if (position < getCount() - 1) {
+                    View divider = new View(getContext());
+                    LinearLayout.LayoutParams dividerParams = new LinearLayout.LayoutParams(
+                            LinearLayout.LayoutParams.MATCH_PARENT,
+                            3 // Increased height of the divider
+                    );
+                    dividerParams.setMargins(0, 5, 0, 5); // Add margin above and below the divider
+                    divider.setLayoutParams(dividerParams);
+                    divider.setBackgroundColor(Color.parseColor("#E0E0E0"));
+                    layout.addView(divider);
+                }
+
+                return layout;
+            }
+        };
         feesSpinner.setAdapter(adapter);
 
         // Set click listeners
@@ -82,12 +135,14 @@ public class studentfees extends AppCompatActivity {
         // Navigate to Half Fees Activity
         halfFeesButton.setOnClickListener(v -> {
             Intent intent = new Intent(studentfees.this, halffeesstudent.class);
+            intent.putExtra("username", hostelName); // Pass the hostel name
             startActivity(intent);
         });
 
         // Navigate to Full Fees Activity
         fullFeesButton.setOnClickListener(v -> {
             Intent intent = new Intent(studentfees.this, fullfeesstudent.class);
+            intent.putExtra("username", hostelName); // Pass the hostel name
             startActivity(intent);
         });
     }

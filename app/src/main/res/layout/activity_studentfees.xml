@@ -153,9 +153,11 @@
             android:padding="8dp"
             android:layout_marginBottom="16dp" />
 
+
+        <!-- Spinner for Fees Options -->
         <TextView
             android:id="@+id/textViewHostelName"
-            android:layout_width="373dp"
+            android:layout_width="367dp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
             android:background="@drawable/rounded_box2"
@@ -165,8 +167,6 @@
             android:textSize="16sp"
             android:textStyle="bold" />
 
-
-        <!-- Spinner for Fees Options -->
         <Spinner
             android:id="@+id/spinnerFees"
             android:layout_width="match_parent"

@@ -37,4 +37,9 @@
     <color name="dark_red">#8B0000</color> <!-- Dark Red -->
     <color name="light_pink">#FFB6C1</color> <!-- Light Pink -->
     <color name="deep_orange">#FF5722</color> <!-- Deep Orange -->
+    <color name="splash_background">#FFFFFF</color> <!-- White background -->
+    <color name="splash_text_color">#000000</color>   <!-- Black text color -->
+    <color name="colorPrimary">#6A0DAD</color>
+    <color name="colorPrimaryDark">#4B0082</color>
+    <color name="colorAccent">#9370DB</color>
 </resources>
