@@ -171,7 +171,7 @@ public class updateanddelete extends AppCompatActivity {
 
             if ("Living".equals(livingStatus)) {
                 updateExistingLivingStudentAndRoom(updates, roomNumber);
-            } else if ("Leaved".equals(livingStatus)) {
+            } else if ("Left".equals(livingStatus)) {
                 moveToLeftStudents(updates);
                 removeFromRoomAndHostelStudent(roomNumber);
             }
